@@ -137,12 +137,15 @@ measurement clean:
    confound where a "horizontal win" would also complete a vertical the model already
    learned, which would inflate the horizontal-win rate without genuine generalization.
 
-2. **Forced-unique block probes.** A block-needed probe is included only when blocking is
-   the **unique optimal move** (`optimal_moves(board) == (block_cell,)`). This excludes
-   already-lost positions where the solver is indifferent and blocking is pointless, which
-   would otherwise deflate both the block rate and the vertical/diagonal control ceilings.
-   Yields 264 horizontal / 264 vertical / 308 diagonal block probes (H = V confirms D₄
-   symmetry).
+2. **Unique-optimal win and block probes.** A probe is included only when the
+   winning/blocking move is the **unique optimal move** (`optimal_moves(board) ==
+   (cell,)`). For blocks this excludes already-lost positions where the solver is
+   indifferent and blocking is pointless. For wins it means the probe measures "takes the
+   available win" cleanly (an alternate winning move no longer counts as a miss), and — for
+   horizontal — makes the probe board *exactly* a board dropped from training (the unique
+   optimal there was the filtered horizontal win), so the held-out set is airtight.
+   Yields: win 457 H / 457 V / 395 D; block 264 H / 264 V / 308 D (H = V confirms D₄
+   symmetry). The full sweep trains at 150 epochs.
 
 3. **Capacity plot groups by parameter count.** Parameter count depends only on
    `(n_layer, d_model)` — `n_head` does not change it — so the headline plot groups the

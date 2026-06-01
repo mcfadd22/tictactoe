@@ -33,10 +33,13 @@ def _completed_line_types_for(board, cell, player):
 
 def win_available_probes(line_type):
     """Boards where the player to move can win on a `line_type` line next move,
-    and that move completes ONLY a `line_type` line (no simultaneous win of
-    another type). The purity constraint removes the confound where a move
-    counts as e.g. a 'horizontal win' only because it also completes a vertical
-    the model already learned. Excludes terminal boards.
+    that move completes ONLY a `line_type` line, AND it is the unique optimal
+    move. The purity constraint removes the confound where a move counts as e.g.
+    a 'horizontal win' only because it also completes a vertical the model
+    already learned. The unique-optimal constraint means the probe measures
+    'takes the available win' cleanly (no alternate winning move counts as a
+    miss); for horizontal it also makes the probe board exactly a board dropped
+    from training. Excludes terminal boards.
     """
     probes = []
     seen = set()
@@ -48,7 +51,8 @@ def win_available_probes(line_type):
             vals = [board[i] for i in line]
             if vals.count(player) == 2 and vals.count(EMPTY) == 1:
                 target = line[vals.index(EMPTY)]
-                if _completed_line_types_for(board, target, player) == {line_type}:
+                if (_completed_line_types_for(board, target, player) == {line_type}
+                        and optimal_moves(board) == (target,)):
                     probes.append((board, target))
                     seen.add(board)
                     break
