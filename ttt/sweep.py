@@ -79,21 +79,26 @@ def aggregate(raw):
             vals = [r["metrics"][m] for r in rows]
             entry[m] = {
                 "mean": statistics.fmean(vals),
-                "std": statistics.pstdev(vals) if len(vals) > 1 else 0.0,
+                "std": statistics.stdev(vals) if len(vals) > 1 else 0.0,
             }
         agg[config] = entry
     return agg
 
 
 def plot_capacity(agg, out_path):
-    """Horizontal win/block vs. capacity, with vertical/diagonal controls."""
-    configs = sorted(agg, key=lambda c: agg[c]["n_params"])
-    x = [agg[c]["n_params"] for c in configs]
+    """Horizontal win/block vs. capacity, with vertical/diagonal controls.
 
-    def series(metric):
-        means = [agg[c][metric]["mean"] for c in configs]
-        stds = [agg[c][metric]["std"] for c in configs]
-        return means, stds
+    Several configs can share a parameter count (n_head does not change the
+    parameter count), so configs are grouped by n_params and averaged, giving
+    one point per distinct capacity. Per-config detail stays in the raw results.
+    """
+    from collections import defaultdict
+
+    groups = defaultdict(list)
+    for cfg, entry in agg.items():
+        groups[entry["n_params"]].append(entry)
+    xs = sorted(groups)
+    any_entry = next(iter(agg.values()))
 
     fig, ax = plt.subplots(figsize=(7, 5))
     for metric, label in [
@@ -102,10 +107,14 @@ def plot_capacity(agg, out_path):
         ("vertical_win", "vertical win (control)"),
         ("diagonal_win", "diagonal win (control)"),
     ]:
-        if metric not in agg[configs[0]]:
+        if metric not in any_entry:
             continue
-        means, stds = series(metric)
-        ax.errorbar(x, means, yerr=stds, marker="o", capsize=3, label=label)
+        means, stds = [], []
+        for x in xs:
+            vals = [e[metric]["mean"] for e in groups[x]]
+            means.append(statistics.fmean(vals))
+            stds.append(statistics.stdev(vals) if len(vals) > 1 else 0.0)
+        ax.errorbar(xs, means, yerr=stds, marker="o", capsize=3, label=label)
     ax.set_xlabel("model parameters")
     ax.set_ylabel("probe success rate")
     ax.set_ylim(-0.02, 1.02)

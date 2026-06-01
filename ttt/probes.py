@@ -6,6 +6,7 @@ from ttt.board import (
 )
 from ttt.enumerate import reachable_paths
 from ttt.dataset import encode_prefix
+from ttt.solver import optimal_moves
 
 
 def _immediate_win_cell(board, player):
@@ -77,7 +78,8 @@ def block_needed_probes(line_type):
         if len(threats) != 1:
             continue
         target = next(iter(threats))
-        if _completed_line_types_for(board, target, opp) == {line_type}:
+        if (_completed_line_types_for(board, target, opp) == {line_type}
+                and optimal_moves(board) == (target,)):
             probes.append((board, target))
     return probes
 

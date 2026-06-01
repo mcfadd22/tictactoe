@@ -67,3 +67,12 @@ def test_block_needed_horizontal_threat_is_pure():
         filled[target] = opp
         for line in VERTICAL_LINES + DIAGONAL_LINES:
             assert not all(filled[i] == opp for i in line)
+
+
+def test_block_needed_probes_are_forced_unique_optimal():
+    from ttt.solver import optimal_moves
+    for line_type in ("horizontal", "vertical", "diagonal"):
+        probes = block_needed_probes(line_type)
+        assert len(probes) > 0
+        for board, target in probes:
+            assert optimal_moves(board) == (target,)
