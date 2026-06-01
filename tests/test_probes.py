@@ -76,3 +76,12 @@ def test_block_needed_probes_are_forced_unique_optimal():
         assert len(probes) > 0
         for board, target in probes:
             assert optimal_moves(board) == (target,)
+
+
+def test_win_available_probes_are_unique_optimal():
+    from ttt.solver import optimal_moves
+    for line_type in ("horizontal", "vertical", "diagonal"):
+        probes = win_available_probes(line_type)
+        assert len(probes) > 0
+        for board, target in probes:
+            assert optimal_moves(board) == (target,)

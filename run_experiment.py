@@ -26,7 +26,7 @@ def main():
     t0 = time.time()
     raw = run_sweep_parallel(
         grid=GRID, seeds=SEEDS,
-        epochs=60, lr=1e-3, batch_size=256, max_orderings=4,
+        epochs=150, lr=1e-3, batch_size=256, max_orderings=4,
         n_workers=n_workers, progress=True,
     )
     print(f"Sweep finished in {(time.time() - t0) / 60:.1f} min")
