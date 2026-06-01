@@ -43,3 +43,28 @@ def winner(board):
 
 def is_terminal(board):
     return winner(board) != 0 or EMPTY not in board
+
+
+def winning_line_for_move(board, cell):
+    """The line completed by the current player playing `cell`, else None."""
+    player = current_player(board)
+    after = apply_move(board, cell)
+    for line in ALL_LINES:
+        if cell in line and all(after[i] == player for i in line):
+            return line
+    return None
+
+
+def line_type_completed_by_move(board, cell):
+    line = winning_line_for_move(board, cell)
+    if line is None:
+        return None
+    if line in HORIZONTAL_LINES:
+        return "horizontal"
+    if line in VERTICAL_LINES:
+        return "vertical"
+    return "diagonal"
+
+
+def move_completes_horizontal(board, cell):
+    return line_type_completed_by_move(board, cell) == "horizontal"
