@@ -34,3 +34,39 @@ def test_plot_capacity_writes_file(tmp_path):
     plot_capacity(agg, str(out))
     assert os.path.exists(out)
     assert os.path.getsize(out) > 0
+
+
+def test_parallel_matches_sequential():
+    # Both pinned to a single torch thread so the sequential reference and the
+    # single-thread workers produce bit-identical results.
+    import torch
+    from ttt.sweep import run_sweep, run_sweep_parallel
+
+    torch.set_num_threads(1)
+    grid = [(1, 1, 16), (2, 1, 16)]
+    seeds = [0, 1]
+    kw = dict(epochs=3, lr=1e-2, batch_size=256, max_orderings=2)
+
+    seq = run_sweep(grid, seeds, **kw)
+    par = run_sweep_parallel(grid, seeds, n_workers=2, **kw)
+
+    assert len(par) == len(seq) == 4
+
+    def key(r):
+        return (r["config"], r["seed"])
+
+    seq_by = {key(r): r for r in seq}
+    par_by = {key(r): r for r in par}
+    assert set(seq_by) == set(par_by)
+    for k in seq_by:
+        assert seq_by[k]["n_params"] == par_by[k]["n_params"]
+        assert seq_by[k]["metrics"] == par_by[k]["metrics"]
+
+
+def test_parallel_is_deterministic():
+    from ttt.sweep import run_sweep_parallel
+
+    kw = dict(epochs=3, lr=1e-2, batch_size=256, max_orderings=2)
+    a = run_sweep_parallel([(1, 1, 16)], [0], n_workers=2, **kw)
+    b = run_sweep_parallel([(1, 1, 16)], [0], n_workers=2, **kw)
+    assert a[0]["metrics"] == b[0]["metrics"]

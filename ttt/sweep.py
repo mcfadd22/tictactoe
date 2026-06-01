@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
 import statistics
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import matplotlib
 matplotlib.use("Agg")  # headless
@@ -39,30 +41,100 @@ def _build_probe_sets():
     return sets
 
 
+def _train_and_eval(config, seed, examples, paths, probe_sets, *,
+                    epochs, lr, batch_size, max_orderings):
+    """Train one (config, seed) and evaluate all probe metrics. Returns a raw row.
+
+    Shared by the sequential and parallel sweeps so both produce identical rows.
+    """
+    n_layer, n_head, d_model = config
+    cfg = GPTConfig(n_layer=n_layer, n_head=n_head, d_model=d_model)
+    model, _ = train_model(
+        cfg, examples, epochs=epochs, lr=lr, batch_size=batch_size, seed=seed,
+    )
+    metrics = {
+        name: evaluate_probes(model, probes, paths,
+                              max_orderings=max_orderings)["rate"]
+        for name, probes in probe_sets.items()
+    }
+    return {
+        "config": config_name(n_layer, n_head, d_model),
+        "n_params": model.num_params(),
+        "seed": seed,
+        "metrics": metrics,
+    }
+
+
 def run_sweep(grid, seeds, *, epochs, lr, batch_size, max_orderings=4):
-    """Train every (config, seed); evaluate all probe metrics. Returns raw rows."""
+    """Train every (config, seed) sequentially; evaluate all metrics. Raw rows."""
     examples = build_examples(max_orderings=max_orderings, filter_horizontal=True)
     paths = reachable_paths(max_orderings=max_orderings)
     probe_sets = _build_probe_sets()
     raw = []
-    for (n_layer, n_head, d_model) in grid:
-        cfg = GPTConfig(n_layer=n_layer, n_head=n_head, d_model=d_model)
+    for config in grid:
         for seed in seeds:
-            model, _ = train_model(
-                cfg, examples, epochs=epochs, lr=lr,
-                batch_size=batch_size, seed=seed,
-            )
-            metrics = {
-                name: evaluate_probes(model, probes, paths,
-                                      max_orderings=max_orderings)["rate"]
-                for name, probes in probe_sets.items()
-            }
-            raw.append({
-                "config": config_name(n_layer, n_head, d_model),
-                "n_params": model.num_params(),
-                "seed": seed,
-                "metrics": metrics,
-            })
+            raw.append(_train_and_eval(
+                config, seed, examples, paths, probe_sets,
+                epochs=epochs, lr=lr, batch_size=batch_size,
+                max_orderings=max_orderings,
+            ))
+    return raw
+
+
+# --- Parallel sweep -------------------------------------------------------
+# Each (config, seed) run is independent. We use a process pool; each worker
+# builds the shared dataset/probes once (in its initializer) and pins torch to
+# a single thread so N processes don't oversubscribe the cores.
+
+_WORKER = {}
+
+
+def _worker_init(max_orderings, filter_horizontal):
+    import torch
+    torch.set_num_threads(1)
+    _WORKER["examples"] = build_examples(
+        max_orderings=max_orderings, filter_horizontal=filter_horizontal
+    )
+    _WORKER["paths"] = reachable_paths(max_orderings=max_orderings)
+    _WORKER["probe_sets"] = _build_probe_sets()
+    _WORKER["max_orderings"] = max_orderings
+
+
+def _worker_task(args):
+    config, seed, epochs, lr, batch_size = args
+    return _train_and_eval(
+        config, seed,
+        _WORKER["examples"], _WORKER["paths"], _WORKER["probe_sets"],
+        epochs=epochs, lr=lr, batch_size=batch_size,
+        max_orderings=_WORKER["max_orderings"],
+    )
+
+
+def run_sweep_parallel(grid, seeds, *, epochs, lr, batch_size, max_orderings=4,
+                       n_workers=None, filter_horizontal=True, progress=False):
+    """Like run_sweep but runs (config, seed) jobs across a process pool.
+
+    n_workers defaults to os.cpu_count(). Results are deterministic per
+    (config, seed) regardless of worker count, since training seeds itself.
+    """
+    if n_workers is None:
+        n_workers = os.cpu_count() or 1
+    tasks = [
+        (config, seed, epochs, lr, batch_size)
+        for config in grid
+        for seed in seeds
+    ]
+    raw = []
+    with ProcessPoolExecutor(
+        max_workers=n_workers,
+        initializer=_worker_init,
+        initargs=(max_orderings, filter_horizontal),
+    ) as pool:
+        futures = [pool.submit(_worker_task, t) for t in tasks]
+        for i, fut in enumerate(as_completed(futures), 1):
+            raw.append(fut.result())
+            if progress:
+                print(f"  [{i}/{len(tasks)}] done", flush=True)
     return raw
 
 
