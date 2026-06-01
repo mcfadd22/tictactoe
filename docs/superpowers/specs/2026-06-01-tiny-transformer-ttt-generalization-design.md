@@ -125,3 +125,26 @@ tiny range.
 - No symmetry data augmentation (by design).
 - Board-state-input control model and "remove all orthogonals" condition are noted as
   possible follow-ups but are **out of scope** for this spec.
+
+## Implementation Refinements (added during build)
+
+Three refinements were made while implementing the probes and reporting, to keep the
+measurement clean:
+
+1. **Pure single-line-type probes.** A win-available / block-needed probe for a given
+   line type only includes positions where the winning/blocking move completes **exactly
+   that one line type** (no simultaneous fork-win of another type). This removes a
+   confound where a "horizontal win" would also complete a vertical the model already
+   learned, which would inflate the horizontal-win rate without genuine generalization.
+
+2. **Forced-unique block probes.** A block-needed probe is included only when blocking is
+   the **unique optimal move** (`optimal_moves(board) == (block_cell,)`). This excludes
+   already-lost positions where the solver is indifferent and blocking is pointless, which
+   would otherwise deflate both the block rate and the vertical/diagonal control ceilings.
+   Yields 264 horizontal / 264 vertical / 308 diagonal block probes (H = V confirms D₄
+   symmetry).
+
+3. **Capacity plot groups by parameter count.** Parameter count depends only on
+   `(n_layer, d_model)` — `n_head` does not change it — so the headline plot groups the
+   three head-count variants that share a parameter count and averages them, giving one
+   point per distinct capacity. Full per-config detail is retained in `results/raw.json`.
