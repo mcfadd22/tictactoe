@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ttt.board import (
     EMPTY, P1, P2, current_player, is_terminal, winner,
-    LINES_BY_TYPE, ALL_LINES, line_type_completed_by_move,
+    LINES_BY_TYPE, ALL_LINES,
 )
 from ttt.enumerate import reachable_paths
 from ttt.dataset import encode_prefix
@@ -18,10 +18,24 @@ def _immediate_win_cell(board, player):
     return None
 
 
-def win_available_probes(line_type):
-    """Boards where the player to move can win on a `line_type` line next move.
+def _completed_line_types_for(board, cell, player):
+    """Line types that become fully `player`-owned after `player` plays `cell`."""
+    after = list(board)
+    after[cell] = player
+    types = set()
+    for ltype, lines in LINES_BY_TYPE.items():
+        for line in lines:
+            if cell in line and all(after[i] == player for i in line):
+                types.add(ltype)
+    return types
 
-    Returns list of (board, target_cell). Excludes already-terminal boards.
+
+def win_available_probes(line_type):
+    """Boards where the player to move can win on a `line_type` line next move,
+    and that move completes ONLY a `line_type` line (no simultaneous win of
+    another type). The purity constraint removes the confound where a move
+    counts as e.g. a 'horizontal win' only because it also completes a vertical
+    the model already learned. Excludes terminal boards.
     """
     probes = []
     seen = set()
@@ -33,22 +47,18 @@ def win_available_probes(line_type):
             vals = [board[i] for i in line]
             if vals.count(player) == 2 and vals.count(EMPTY) == 1:
                 target = line[vals.index(EMPTY)]
-                # Verify the move's winning line type matches; skip if the cell
-                # simultaneously completes a line of a different (higher-priority) type.
-                if line_type_completed_by_move(board, target) != line_type:
-                    continue
-                probes.append((board, target))
-                seen.add(board)
-                break
+                if _completed_line_types_for(board, target, player) == {line_type}:
+                    probes.append((board, target))
+                    seen.add(board)
+                    break
     return probes
 
 
 def block_needed_probes(line_type):
-    """Boards where the opponent threatens a `line_type` win and blocking it is
-    the clear correct move.
-
-    Clean conditions: the player to move has NO immediate win of their own, and
-    there is exactly one opponent threat cell, so the block target is unique.
+    """Boards where the opponent threatens exactly one winning cell, that block
+    completes ONLY a `line_type` line for the opponent, and the player to move
+    has no immediate win of their own. So the block unambiguously tests
+    `line_type` defense.
     """
     probes = []
     for board in reachable_paths(max_orderings=1):
@@ -59,17 +69,16 @@ def block_needed_probes(line_type):
         if _immediate_win_cell(board, player) is not None:
             continue  # taking the win dominates blocking; skip for cleanliness
         threats = set()
-        target_for_type = None
         for a, b, c in ALL_LINES:
             cells = (a, b, c)
             vals = [board[i] for i in cells]
             if vals.count(opp) == 2 and vals.count(EMPTY) == 1:
-                cell = cells[vals.index(EMPTY)]
-                threats.add(cell)
-                if (a, b, c) in LINES_BY_TYPE[line_type]:
-                    target_for_type = cell
-        if len(threats) == 1 and target_for_type is not None:
-            probes.append((board, target_for_type))
+                threats.add(cells[vals.index(EMPTY)])
+        if len(threats) != 1:
+            continue
+        target = next(iter(threats))
+        if _completed_line_types_for(board, target, opp) == {line_type}:
+            probes.append((board, target))
     return probes
 
 

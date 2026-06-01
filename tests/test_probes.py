@@ -43,3 +43,27 @@ def test_probe_prefixes_reach_board():
         for tok in pref[1:]:  # skip BOS
             replay = apply_move(replay, tok)
         assert replay == board
+
+
+def test_win_available_horizontal_targets_are_pure():
+    from ttt.board import VERTICAL_LINES, DIAGONAL_LINES, current_player, apply_move
+    probes = win_available_probes("horizontal")
+    assert len(probes) > 0
+    for board, target in probes:
+        player = current_player(board)
+        after = apply_move(board, target)  # apply_move uses the current player
+        for line in VERTICAL_LINES + DIAGONAL_LINES:
+            assert not all(after[i] == player for i in line)
+
+
+def test_block_needed_horizontal_threat_is_pure():
+    from ttt.board import VERTICAL_LINES, DIAGONAL_LINES, current_player, P1, P2
+    probes = block_needed_probes("horizontal")
+    assert len(probes) > 0
+    for board, target in probes:
+        player = current_player(board)
+        opp = P2 if player == P1 else P1
+        filled = list(board)
+        filled[target] = opp
+        for line in VERTICAL_LINES + DIAGONAL_LINES:
+            assert not all(filled[i] == opp for i in line)
