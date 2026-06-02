@@ -4,6 +4,7 @@ import json
 import os
 import statistics
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from datetime import datetime
 
 import matplotlib
 matplotlib.use("Agg")  # headless
@@ -202,3 +203,21 @@ def save_results(raw, agg, raw_path, agg_path):
         json.dump(raw, f, indent=2)
     with open(agg_path, "w") as f:
         json.dump(agg, f, indent=2)
+
+
+def prepare_run_dir(name=None, base="results"):
+    """Create and return a fresh per-run output directory under `base`.
+
+    Defaults to a timestamped name so runs never collide. Refuses to overwrite
+    an existing non-empty directory, so prior experiment results are protected.
+    """
+    if name is None:
+        name = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    path = os.path.join(base, name)
+    if os.path.isdir(path) and os.listdir(path):
+        raise FileExistsError(
+            f"run dir already exists and is non-empty: {path} "
+            f"(choose a different run name to avoid overwriting results)"
+        )
+    os.makedirs(path, exist_ok=True)
+    return path

@@ -70,3 +70,22 @@ def test_parallel_is_deterministic():
     a = run_sweep_parallel([(1, 1, 16)], [0], n_workers=2, **kw)
     b = run_sweep_parallel([(1, 1, 16)], [0], n_workers=2, **kw)
     assert a[0]["metrics"] == b[0]["metrics"]
+
+
+def test_prepare_run_dir_protects_existing(tmp_path):
+    import os
+    import pytest
+    from ttt.sweep import prepare_run_dir
+
+    d = prepare_run_dir("expA", base=str(tmp_path))
+    assert os.path.isdir(d)
+
+    # A non-empty existing run dir must not be silently overwritten.
+    with open(os.path.join(d, "raw.json"), "w") as f:
+        f.write("{}")
+    with pytest.raises(FileExistsError):
+        prepare_run_dir("expA", base=str(tmp_path))
+
+    # Default (no name) yields a fresh timestamped dir.
+    d2 = prepare_run_dir(base=str(tmp_path))
+    assert os.path.isdir(d2) and d2 != d
