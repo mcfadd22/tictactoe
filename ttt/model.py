@@ -17,6 +17,7 @@ class GPTConfig:
     vocab_size: int = VOCAB_SIZE
     max_len: int = 10
     n_out: int = N_CELLS
+    head: str = "flat9"
 
 
 class CausalSelfAttention(nn.Module):
@@ -59,6 +60,14 @@ class Block(nn.Module):
         return x
 
 
+def factored_logits(row_logit, col_logit):
+    """Combine a (B,3) row distribution and a (B,3) col distribution into (B,9)
+    cell logits, where cell index = row*3 + col and
+    logit[r, c] = row_logit[r] + col_logit[c]."""
+    grid = row_logit.unsqueeze(2) + col_logit.unsqueeze(1)  # (B, 3, 3) [b, r, c]
+    return grid.reshape(row_logit.shape[0], N_CELLS)
+
+
 class TTTGPT(nn.Module):
     def __init__(self, cfg: GPTConfig):
         super().__init__()
@@ -69,7 +78,25 @@ class TTTGPT(nn.Module):
             [Block(cfg.d_model, cfg.n_head) for _ in range(cfg.n_layer)]
         )
         self.ln_f = nn.LayerNorm(cfg.d_model)
-        self.head = nn.Linear(cfg.d_model, cfg.n_out)
+        self.head_type = cfg.head
+        if cfg.head == "flat9":
+            self.head = nn.Linear(cfg.d_model, N_CELLS)
+        elif cfg.head == "tied":
+            # Readout ties to the input cell embeddings (token ids 0..8 under the
+            # flat encoding); only a per-cell bias is learned here.
+            self.tied_bias = nn.Parameter(torch.zeros(N_CELLS))
+        elif cfg.head == "factored":
+            self.row_head = nn.Linear(cfg.d_model, 3)
+            self.col_head = nn.Linear(cfg.d_model, 3)
+        else:
+            raise ValueError(f"unknown head: {cfg.head}")
+
+    def _readout(self, h):
+        if self.head_type == "flat9":
+            return self.head(h)
+        if self.head_type == "tied":
+            return h @ self.tok_emb.weight[:N_CELLS].t() + self.tied_bias
+        return factored_logits(self.row_head(h), self.col_head(h))
 
     def forward(self, ids, lengths):
         B, T = ids.shape
@@ -80,7 +107,7 @@ class TTTGPT(nn.Module):
         x = self.ln_f(x)
         last = (lengths - 1).clamp(min=0)  # gather the final real token
         gathered = x[torch.arange(B, device=ids.device), last]
-        return self.head(gathered)
+        return self._readout(gathered)
 
     def num_params(self):
         return sum(p.numel() for p in self.parameters())
