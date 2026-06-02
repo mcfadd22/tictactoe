@@ -66,5 +66,15 @@ def line_type_completed_by_move(board, cell):
     return "diagonal"
 
 
+def horizontal_row_completed_by_move(board, cell):
+    """Row index (0/1/2) of the horizontal line `cell` completes for the current
+    player, or None if the move completes no horizontal line. Single source of
+    truth for both the dataset row-set filter and per-row probes."""
+    line = winning_line_for_move(board, cell)
+    if line in HORIZONTAL_LINES:
+        return HORIZONTAL_LINES.index(line)
+    return None
+
+
 def move_completes_horizontal(board, cell):
-    return line_type_completed_by_move(board, cell) == "horizontal"
+    return horizontal_row_completed_by_move(board, cell) is not None
