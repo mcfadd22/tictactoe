@@ -5,7 +5,7 @@ Trains tiny decoder-only transformers on tic-tac-toe move-sequences with all
 horizontal wins they never saw (rotational-symmetry generalization) or (2) only
 block horizontal threats (a pattern still present in training).
 
-See the design and plan in `docs/superpowers/`.
+See the design and plan in `docs/`.
 
 ## Setup
 ```bash
