@@ -1,0 +1,1757 @@
+[
+  {
+    "config": "L1H1D16",
+    "n_params": 3801,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.10430686406460296,
+      "horizontal_block": 0.8307291666666666,
+      "vertical_win": 0.9569313593539704,
+      "vertical_block": 0.4036458333333333,
+      "diagonal_win": 0.9486607142857143,
+      "diagonal_block": 0.7610619469026548
+    }
+  },
+  {
+    "config": "L1H1D16",
+    "n_params": 3801,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.10363391655450875,
+      "horizontal_block": 0.7565104166666666,
+      "vertical_win": 0.84185733512786,
+      "vertical_block": 0.3567708333333333,
+      "diagonal_win": 0.7953869047619048,
+      "diagonal_block": 0.6261061946902655
+    }
+  },
+  {
+    "config": "L1H1D16",
+    "n_params": 3801,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.09690444145356662,
+      "horizontal_block": 0.8033854166666666,
+      "vertical_win": 0.9394347240915208,
+      "vertical_block": 0.4088541666666667,
+      "diagonal_win": 0.9412202380952381,
+      "diagonal_block": 0.7311946902654868
+    }
+  },
+  {
+    "config": "L1H1D16",
+    "n_params": 3801,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.09757738896366083,
+      "horizontal_block": 0.7877604166666666,
+      "vertical_win": 0.9528936742934051,
+      "vertical_block": 0.4205729166666667,
+      "diagonal_win": 0.9151785714285714,
+      "diagonal_block": 0.7057522123893806
+    }
+  },
+  {
+    "config": "L1H1D16",
+    "n_params": 3801,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.09959623149394348,
+      "horizontal_block": 0.7903645833333334,
+      "vertical_win": 0.9427994616419919,
+      "vertical_block": 0.4765625,
+      "diagonal_win": 0.9077380952380952,
+      "diagonal_block": 0.6493362831858407
+    }
+  },
+  {
+    "config": "L1H1D32",
+    "n_params": 13737,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.09690444145356662,
+      "horizontal_block": 0.9739583333333334,
+      "vertical_win": 0.9973082099596231,
+      "vertical_block": 0.8541666666666666,
+      "diagonal_win": 0.9918154761904762,
+      "diagonal_block": 0.9402654867256637
+    }
+  },
+  {
+    "config": "L1H1D32",
+    "n_params": 13737,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.09690444145356662,
+      "horizontal_block": 0.9752604166666666,
+      "vertical_win": 0.9925975773889637,
+      "vertical_block": 0.8736979166666666,
+      "diagonal_win": 0.9903273809523809,
+      "diagonal_block": 0.9446902654867256
+    }
+  },
+  {
+    "config": "L1H1D32",
+    "n_params": 13737,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.10565275908479138,
+      "horizontal_block": 0.9765625,
+      "vertical_win": 0.9932705248990579,
+      "vertical_block": 0.8645833333333334,
+      "diagonal_win": 0.9947916666666666,
+      "diagonal_block": 0.9303097345132744
+    }
+  },
+  {
+    "config": "L1H1D32",
+    "n_params": 13737,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.1009421265141319,
+      "horizontal_block": 0.9596354166666666,
+      "vertical_win": 0.9986541049798116,
+      "vertical_block": 0.8893229166666666,
+      "diagonal_win": 0.9977678571428571,
+      "diagonal_block": 0.9070796460176991
+    }
+  },
+  {
+    "config": "L1H1D32",
+    "n_params": 13737,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.09690444145356662,
+      "horizontal_block": 0.9869791666666666,
+      "vertical_win": 0.9986541049798116,
+      "vertical_block": 0.8984375,
+      "diagonal_win": 0.9828869047619048,
+      "diagonal_block": 0.9756637168141593
+    }
+  },
+  {
+    "config": "L1H2D16",
+    "n_params": 3801,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.09825033647375504,
+      "horizontal_block": 0.91796875,
+      "vertical_win": 0.9010767160161507,
+      "vertical_block": 0.3541666666666667,
+      "diagonal_win": 0.8497023809523809,
+      "diagonal_block": 0.7577433628318584
+    }
+  },
+  {
+    "config": "L1H2D16",
+    "n_params": 3801,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.09959623149394348,
+      "horizontal_block": 0.80859375,
+      "vertical_win": 0.9650067294751009,
+      "vertical_block": 0.515625,
+      "diagonal_win": 0.9449404761904762,
+      "diagonal_block": 0.7533185840707964
+    }
+  },
+  {
+    "config": "L1H2D16",
+    "n_params": 3801,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.09690444145356662,
+      "horizontal_block": 0.8333333333333334,
+      "vertical_win": 0.9629878869448183,
+      "vertical_block": 0.4791666666666667,
+      "diagonal_win": 0.9345238095238095,
+      "diagonal_block": 0.7323008849557522
+    }
+  },
+  {
+    "config": "L1H2D16",
+    "n_params": 3801,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.09690444145356662,
+      "horizontal_block": 0.78125,
+      "vertical_win": 0.9562584118438762,
+      "vertical_block": 0.453125,
+      "diagonal_win": 0.9285714285714286,
+      "diagonal_block": 0.786504424778761
+    }
+  },
+  {
+    "config": "L1H2D16",
+    "n_params": 3801,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.1009421265141319,
+      "horizontal_block": 0.8216145833333334,
+      "vertical_win": 0.946164199192463,
+      "vertical_block": 0.4856770833333333,
+      "diagonal_win": 0.9278273809523809,
+      "diagonal_block": 0.7676991150442478
+    }
+  },
+  {
+    "config": "L1H1D64",
+    "n_params": 52041,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.12584118438761777,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9947916666666666,
+      "diagonal_win": 0.9992559523809523,
+      "diagonal_block": 0.995575221238938
+    }
+  },
+  {
+    "config": "L1H1D64",
+    "n_params": 52041,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.12449528936742935,
+      "horizontal_block": 0.99609375,
+      "vertical_win": 0.9986541049798116,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9966814159292036
+    }
+  },
+  {
+    "config": "L1H1D64",
+    "n_params": 52041,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.13391655450874831,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 0.9959623149394348,
+      "vertical_block": 0.99609375,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.995575221238938
+    }
+  },
+  {
+    "config": "L1H1D64",
+    "n_params": 52041,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.11440107671601615,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 0.9986541049798116,
+      "vertical_block": 0.9934895833333334,
+      "diagonal_win": 0.9977678571428571,
+      "diagonal_block": 0.9911504424778761
+    }
+  },
+  {
+    "config": "L1H1D64",
+    "n_params": 52041,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.1117092866756393,
+      "horizontal_block": 0.9986979166666666,
+      "vertical_win": 0.9986541049798116,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9911504424778761
+    }
+  },
+  {
+    "config": "L1H2D32",
+    "n_params": 13737,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.09690444145356662,
+      "horizontal_block": 0.984375,
+      "vertical_win": 0.9979811574697174,
+      "vertical_block": 0.9557291666666666,
+      "diagonal_win": 0.9977678571428571,
+      "diagonal_block": 0.9756637168141593
+    }
+  },
+  {
+    "config": "L1H2D32",
+    "n_params": 13737,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.09892328398384927,
+      "horizontal_block": 0.9765625,
+      "vertical_win": 0.9959623149394348,
+      "vertical_block": 0.8893229166666666,
+      "diagonal_win": 0.9947916666666666,
+      "diagonal_block": 0.9679203539823009
+    }
+  },
+  {
+    "config": "L1H2D32",
+    "n_params": 13737,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.11843876177658143,
+      "horizontal_block": 0.9947916666666666,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9791666666666666,
+      "diagonal_win": 0.9992559523809523,
+      "diagonal_block": 0.9856194690265486
+    }
+  },
+  {
+    "config": "L1H2D32",
+    "n_params": 13737,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.10296096904441454,
+      "horizontal_block": 0.9895833333333334,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 0.98046875,
+      "diagonal_win": 0.9977678571428571,
+      "diagonal_block": 0.9889380530973452
+    }
+  },
+  {
+    "config": "L1H2D32",
+    "n_params": 13737,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.10565275908479138,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 0.9959623149394348,
+      "vertical_block": 0.9752604166666666,
+      "diagonal_win": 0.9985119047619048,
+      "diagonal_block": 0.9756637168141593
+    }
+  },
+  {
+    "config": "L1H2D64",
+    "n_params": 52041,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.17092866756393002,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L1H2D64",
+    "n_params": 52041,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.11440107671601615,
+      "horizontal_block": 1.0,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 0.9895833333333334,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9966814159292036
+    }
+  },
+  {
+    "config": "L1H2D64",
+    "n_params": 52041,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1594885598923284,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L1H4D16",
+    "n_params": 3801,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.1117092866756393,
+      "horizontal_block": 0.7994791666666666,
+      "vertical_win": 0.9266487213997309,
+      "vertical_block": 0.4401041666666667,
+      "diagonal_win": 0.8921130952380952,
+      "diagonal_block": 0.6537610619469026
+    }
+  },
+  {
+    "config": "L1H4D16",
+    "n_params": 3801,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.10026917900403769,
+      "horizontal_block": 0.8841145833333334,
+      "vertical_win": 0.8728129205921938,
+      "vertical_block": 0.359375,
+      "diagonal_win": 0.8467261904761905,
+      "diagonal_block": 0.6913716814159292
+    }
+  },
+  {
+    "config": "L1H2D64",
+    "n_params": 52041,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.10699865410497982,
+      "horizontal_block": 1.0,
+      "vertical_win": 0.9986541049798116,
+      "vertical_block": 0.9921875,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9988938053097345
+    }
+  },
+  {
+    "config": "L1H2D64",
+    "n_params": 52041,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.12449528936742935,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L1H4D16",
+    "n_params": 3801,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.09757738896366083,
+      "horizontal_block": 0.8671875,
+      "vertical_win": 0.9481830417227456,
+      "vertical_block": 0.4856770833333333,
+      "diagonal_win": 0.9025297619047619,
+      "diagonal_block": 0.7334070796460177
+    }
+  },
+  {
+    "config": "L1H4D16",
+    "n_params": 3801,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.09690444145356662,
+      "horizontal_block": 0.7994791666666666,
+      "vertical_win": 0.9528936742934051,
+      "vertical_block": 0.3997395833333333,
+      "diagonal_win": 0.9211309523809523,
+      "diagonal_block": 0.7356194690265486
+    }
+  },
+  {
+    "config": "L1H4D16",
+    "n_params": 3801,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.09825033647375504,
+      "horizontal_block": 0.8606770833333334,
+      "vertical_win": 0.8977119784656796,
+      "vertical_block": 0.375,
+      "diagonal_win": 0.8683035714285714,
+      "diagonal_block": 0.6648230088495575
+    }
+  },
+  {
+    "config": "L1H4D32",
+    "n_params": 13737,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.11709286675639301,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 1.0,
+      "vertical_block": 0.984375,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9922566371681416
+    }
+  },
+  {
+    "config": "L1H4D32",
+    "n_params": 13737,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.1271870794078062,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 0.9973958333333334,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9845132743362832
+    }
+  },
+  {
+    "config": "L1H4D32",
+    "n_params": 13737,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.126514131897712,
+      "horizontal_block": 0.99609375,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 0.9713541666666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9756637168141593
+    }
+  },
+  {
+    "config": "L1H4D32",
+    "n_params": 13737,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.11641991924629878,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 0.9966352624495289,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9977876106194691
+    }
+  },
+  {
+    "config": "L1H4D32",
+    "n_params": 13737,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.10296096904441454,
+      "horizontal_block": 0.9947916666666666,
+      "vertical_win": 0.9973082099596231,
+      "vertical_block": 0.95703125,
+      "diagonal_win": 0.9985119047619048,
+      "diagonal_block": 0.9668141592920354
+    }
+  },
+  {
+    "config": "L1H4D64",
+    "n_params": 52041,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.16218034993270525,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L1H4D64",
+    "n_params": 52041,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.17765814266487215,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L1H4D64",
+    "n_params": 52041,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.17496635262449528,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L1H4D64",
+    "n_params": 52041,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.18977119784656796,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L1H4D64",
+    "n_params": 52041,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.15545087483176312,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H1D16",
+    "n_params": 7081,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.1756393001345895,
+      "horizontal_block": 0.93359375,
+      "vertical_win": 0.9851951547779273,
+      "vertical_block": 0.8984375,
+      "diagonal_win": 0.9918154761904762,
+      "diagonal_block": 0.9280973451327433
+    }
+  },
+  {
+    "config": "L2H1D16",
+    "n_params": 7081,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.14535666218034993,
+      "horizontal_block": 0.9596354166666666,
+      "vertical_win": 0.9831763122476447,
+      "vertical_block": 0.9036458333333334,
+      "diagonal_win": 0.9962797619047619,
+      "diagonal_block": 0.9369469026548672
+    }
+  },
+  {
+    "config": "L2H1D16",
+    "n_params": 7081,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.12113055181695828,
+      "horizontal_block": 0.9557291666666666,
+      "vertical_win": 0.9825033647375505,
+      "vertical_block": 0.8880208333333334,
+      "diagonal_win": 0.9888392857142857,
+      "diagonal_block": 0.918141592920354
+    }
+  },
+  {
+    "config": "L2H1D16",
+    "n_params": 7081,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.12920592193808883,
+      "horizontal_block": 0.8802083333333334,
+      "vertical_win": 0.9656796769851952,
+      "vertical_block": 0.73828125,
+      "diagonal_win": 0.9427083333333334,
+      "diagonal_block": 0.8042035398230089
+    }
+  },
+  {
+    "config": "L2H1D16",
+    "n_params": 7081,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.12449528936742935,
+      "horizontal_block": 0.9544270833333334,
+      "vertical_win": 0.9804845222072678,
+      "vertical_block": 0.89453125,
+      "diagonal_win": 0.9955357142857143,
+      "diagonal_block": 0.9026548672566371
+    }
+  },
+  {
+    "config": "L2H1D32",
+    "n_params": 26441,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.19784656796769853,
+      "horizontal_block": 0.99609375,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9947916666666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.995575221238938
+    }
+  },
+  {
+    "config": "L2H1D32",
+    "n_params": 26441,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.1810228802153432,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9977876106194691
+    }
+  },
+  {
+    "config": "L2H1D32",
+    "n_params": 26441,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.14468371467025573,
+      "horizontal_block": 0.9986979166666666,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 0.9947916666666666,
+      "diagonal_win": 0.9992559523809523,
+      "diagonal_block": 0.9922566371681416
+    }
+  },
+  {
+    "config": "L2H1D32",
+    "n_params": 26441,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.1601615074024226,
+      "horizontal_block": 1.0,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 0.98046875,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9922566371681416
+    }
+  },
+  {
+    "config": "L2H1D32",
+    "n_params": 26441,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.14199192462987886,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 0.9986541049798116,
+      "vertical_block": 0.9947916666666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9856194690265486
+    }
+  },
+  {
+    "config": "L2H1D64",
+    "n_params": 102025,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.15545087483176312,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H1D64",
+    "n_params": 102025,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.148721399730821,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9986979166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H1D64",
+    "n_params": 102025,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.15814266487213996,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9986979166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H1D64",
+    "n_params": 102025,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.1641991924629879,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H1D64",
+    "n_params": 102025,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.13526244952893673,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H2D16",
+    "n_params": 7081,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.22072678331090176,
+      "horizontal_block": 0.96875,
+      "vertical_win": 0.9912516823687753,
+      "vertical_block": 0.8932291666666666,
+      "diagonal_win": 0.9977678571428571,
+      "diagonal_block": 0.9601769911504425
+    }
+  },
+  {
+    "config": "L2H2D16",
+    "n_params": 7081,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.17765814266487215,
+      "horizontal_block": 0.94921875,
+      "vertical_win": 0.9865410497981157,
+      "vertical_block": 0.8684895833333334,
+      "diagonal_win": 0.9955357142857143,
+      "diagonal_block": 0.9424778761061947
+    }
+  },
+  {
+    "config": "L2H2D16",
+    "n_params": 7081,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.11978465679676985,
+      "horizontal_block": 0.94140625,
+      "vertical_win": 0.9838492597577388,
+      "vertical_block": 0.9205729166666666,
+      "diagonal_win": 0.9903273809523809,
+      "diagonal_block": 0.9369469026548672
+    }
+  },
+  {
+    "config": "L2H2D16",
+    "n_params": 7081,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.1500672947510094,
+      "horizontal_block": 0.95703125,
+      "vertical_win": 0.9744279946164199,
+      "vertical_block": 0.9166666666666666,
+      "diagonal_win": 0.9933035714285714,
+      "diagonal_block": 0.952433628318584
+    }
+  },
+  {
+    "config": "L2H2D16",
+    "n_params": 7081,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.1480484522207268,
+      "horizontal_block": 0.9440104166666666,
+      "vertical_win": 0.9865410497981157,
+      "vertical_block": 0.875,
+      "diagonal_win": 0.9821428571428571,
+      "diagonal_block": 0.8661504424778761
+    }
+  },
+  {
+    "config": "L2H2D32",
+    "n_params": 26441,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.148721399730821,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9986979166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9977876106194691
+    }
+  },
+  {
+    "config": "L2H2D32",
+    "n_params": 26441,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1857335127860027,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9988938053097345
+    }
+  },
+  {
+    "config": "L2H2D32",
+    "n_params": 26441,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.15477792732166892,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9986979166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H2D32",
+    "n_params": 26441,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.17294751009421266,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9977876106194691
+    }
+  },
+  {
+    "config": "L2H2D32",
+    "n_params": 26441,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.18371467025572005,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9988938053097345
+    }
+  },
+  {
+    "config": "L2H2D64",
+    "n_params": 102025,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.20457604306864063,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H2D64",
+    "n_params": 102025,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.1702557200538358,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H2D64",
+    "n_params": 102025,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.2133243606998654,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H2D64",
+    "n_params": 102025,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.14737550471063257,
+      "horizontal_block": 1.0,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H4D16",
+    "n_params": 7081,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.22678331090174966,
+      "horizontal_block": 0.9518229166666666,
+      "vertical_win": 0.9932705248990579,
+      "vertical_block": 0.9192708333333334,
+      "diagonal_win": 0.9955357142857143,
+      "diagonal_block": 0.9336283185840708
+    }
+  },
+  {
+    "config": "L2H4D16",
+    "n_params": 7081,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.23283983849259757,
+      "horizontal_block": 0.90625,
+      "vertical_win": 0.9811574697173621,
+      "vertical_block": 0.875,
+      "diagonal_win": 0.9947916666666666,
+      "diagonal_block": 0.918141592920354
+    }
+  },
+  {
+    "config": "L2H4D16",
+    "n_params": 7081,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1541049798115747,
+      "horizontal_block": 0.9309895833333334,
+      "vertical_win": 0.9845222072678331,
+      "vertical_block": 0.87890625,
+      "diagonal_win": 0.9828869047619048,
+      "diagonal_block": 0.918141592920354
+    }
+  },
+  {
+    "config": "L2H4D16",
+    "n_params": 7081,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.15679676985195154,
+      "horizontal_block": 0.9427083333333334,
+      "vertical_win": 0.9730820995962315,
+      "vertical_block": 0.8502604166666666,
+      "diagonal_win": 0.9955357142857143,
+      "diagonal_block": 0.9446902654867256
+    }
+  },
+  {
+    "config": "L2H4D16",
+    "n_params": 7081,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.16689098250336473,
+      "horizontal_block": 0.9700520833333334,
+      "vertical_win": 0.9858681022880216,
+      "vertical_block": 0.9231770833333334,
+      "diagonal_win": 0.9970238095238095,
+      "diagonal_block": 0.9336283185840708
+    }
+  },
+  {
+    "config": "L2H2D64",
+    "n_params": 102025,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.19986541049798115,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H4D32",
+    "n_params": 26441,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.17227456258411844,
+      "horizontal_block": 0.9986979166666666,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9973958333333334,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H4D32",
+    "n_params": 26441,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1601615074024226,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9986979166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.995575221238938
+    }
+  },
+  {
+    "config": "L2H4D32",
+    "n_params": 26441,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.15275908479138628,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9933628318584071
+    }
+  },
+  {
+    "config": "L2H4D32",
+    "n_params": 26441,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.1655450874831763,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9988938053097345
+    }
+  },
+  {
+    "config": "L2H4D32",
+    "n_params": 26441,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.19919246298788695,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9988938053097345
+    }
+  },
+  {
+    "config": "L2H4D64",
+    "n_params": 102025,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.24024226110363392,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H4D64",
+    "n_params": 102025,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.19515477792732167,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H4D64",
+    "n_params": 102025,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.18506056527590847,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H4D64",
+    "n_params": 102025,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.1810228802153432,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L2H4D64",
+    "n_params": 102025,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.17092866756393002,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H1D16",
+    "n_params": 13641,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.20255720053835802,
+      "horizontal_block": 0.9947916666666666,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 0.9908854166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9922566371681416
+    }
+  },
+  {
+    "config": "L4H1D16",
+    "n_params": 13641,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.18236877523553163,
+      "horizontal_block": 0.984375,
+      "vertical_win": 0.9979811574697174,
+      "vertical_block": 0.9752604166666666,
+      "diagonal_win": 0.9977678571428571,
+      "diagonal_block": 0.9723451327433629
+    }
+  },
+  {
+    "config": "L4H1D16",
+    "n_params": 13641,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.14131897711978467,
+      "horizontal_block": 0.98046875,
+      "vertical_win": 0.9892328398384926,
+      "vertical_block": 0.9609375,
+      "diagonal_win": 0.9985119047619048,
+      "diagonal_block": 0.963495575221239
+    }
+  },
+  {
+    "config": "L4H1D16",
+    "n_params": 13641,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.1958277254374159,
+      "horizontal_block": 0.9947916666666666,
+      "vertical_win": 0.9973082099596231,
+      "vertical_block": 0.9817708333333334,
+      "diagonal_win": 0.9985119047619048,
+      "diagonal_block": 0.9800884955752213
+    }
+  },
+  {
+    "config": "L4H1D16",
+    "n_params": 13641,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.15881561238223418,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 0.9966352624495289,
+      "vertical_block": 0.9609375,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9745575221238938
+    }
+  },
+  {
+    "config": "L4H1D32",
+    "n_params": 51849,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.22274562584118437,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9988938053097345
+    }
+  },
+  {
+    "config": "L4H1D32",
+    "n_params": 51849,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.17092866756393002,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H1D32",
+    "n_params": 51849,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1480484522207268,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9973958333333334,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9977876106194691
+    }
+  },
+  {
+    "config": "L4H1D32",
+    "n_params": 51849,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.17496635262449528,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H1D32",
+    "n_params": 51849,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.14602960969044415,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.99609375,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.995575221238938
+    }
+  },
+  {
+    "config": "L4H1D64",
+    "n_params": 201993,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.15814266487213996,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H1D64",
+    "n_params": 201993,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.19650067294751009,
+      "horizontal_block": 0.9986979166666666,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 1.0,
+      "diagonal_win": 0.9992559523809523,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H1D64",
+    "n_params": 201993,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.2819650067294751,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H2D16",
+    "n_params": 13641,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.17227456258411844,
+      "horizontal_block": 0.9895833333333334,
+      "vertical_win": 0.9973082099596231,
+      "vertical_block": 0.9609375,
+      "diagonal_win": 0.9992559523809523,
+      "diagonal_block": 0.9778761061946902
+    }
+  },
+  {
+    "config": "L4H1D64",
+    "n_params": 201993,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.25370121130551815,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H1D64",
+    "n_params": 201993,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.20255720053835802,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H2D16",
+    "n_params": 13641,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1648721399730821,
+      "horizontal_block": 0.9791666666666666,
+      "vertical_win": 0.9946164199192463,
+      "vertical_block": 0.9674479166666666,
+      "diagonal_win": 0.9977678571428571,
+      "diagonal_block": 0.9579646017699115
+    }
+  },
+  {
+    "config": "L4H2D16",
+    "n_params": 13641,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.1756393001345895,
+      "horizontal_block": 0.9934895833333334,
+      "vertical_win": 0.9979811574697174,
+      "vertical_block": 0.95703125,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9811946902654868
+    }
+  },
+  {
+    "config": "L4H2D16",
+    "n_params": 13641,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.14939434724091522,
+      "horizontal_block": 0.9830729166666666,
+      "vertical_win": 0.9892328398384926,
+      "vertical_block": 0.9401041666666666,
+      "diagonal_win": 0.9992559523809523,
+      "diagonal_block": 0.9612831858407079
+    }
+  },
+  {
+    "config": "L4H2D16",
+    "n_params": 13641,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.13526244952893673,
+      "horizontal_block": 0.9830729166666666,
+      "vertical_win": 0.993943472409152,
+      "vertical_block": 0.9661458333333334,
+      "diagonal_win": 0.9955357142857143,
+      "diagonal_block": 0.9546460176991151
+    }
+  },
+  {
+    "config": "L4H2D32",
+    "n_params": 51849,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.21063257065948857,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H2D32",
+    "n_params": 51849,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.15679676985195154,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H2D32",
+    "n_params": 51849,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.19650067294751009,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H2D32",
+    "n_params": 51849,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.16150740242261102,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H2D32",
+    "n_params": 51849,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.18304172274562583,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9986979166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9977876106194691
+    }
+  },
+  {
+    "config": "L4H2D64",
+    "n_params": 201993,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.22409152086137282,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9977876106194691
+    }
+  },
+  {
+    "config": "L4H2D64",
+    "n_params": 201993,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.2294751009421265,
+      "horizontal_block": 1.0,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H2D64",
+    "n_params": 201993,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1917900403768506,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H2D64",
+    "n_params": 201993,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.20928667563930015,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 0.9985119047619048,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H4D16",
+    "n_params": 13641,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.180349932705249,
+      "horizontal_block": 0.99609375,
+      "vertical_win": 0.9973082099596231,
+      "vertical_block": 0.9609375,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9767699115044248
+    }
+  },
+  {
+    "config": "L4H4D16",
+    "n_params": 13641,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.1426648721399731,
+      "horizontal_block": 0.9869791666666666,
+      "vertical_win": 0.993943472409152,
+      "vertical_block": 0.953125,
+      "diagonal_win": 0.9970238095238095,
+      "diagonal_block": 0.9657079646017699
+    }
+  },
+  {
+    "config": "L4H2D64",
+    "n_params": 201993,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.18304172274562583,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H4D16",
+    "n_params": 13641,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1864064602960969,
+      "horizontal_block": 0.9791666666666666,
+      "vertical_win": 0.993943472409152,
+      "vertical_block": 0.9453125,
+      "diagonal_win": 0.9970238095238095,
+      "diagonal_block": 0.963495575221239
+    }
+  },
+  {
+    "config": "L4H4D16",
+    "n_params": 13641,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.18977119784656796,
+      "horizontal_block": 0.9752604166666666,
+      "vertical_win": 0.9966352624495289,
+      "vertical_block": 0.9479166666666666,
+      "diagonal_win": 0.9985119047619048,
+      "diagonal_block": 0.9657079646017699
+    }
+  },
+  {
+    "config": "L4H4D16",
+    "n_params": 13641,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.18977119784656796,
+      "horizontal_block": 0.9921875,
+      "vertical_win": 0.9966352624495289,
+      "vertical_block": 0.9765625,
+      "diagonal_win": 0.9992559523809523,
+      "diagonal_block": 0.9579646017699115
+    }
+  },
+  {
+    "config": "L4H4D32",
+    "n_params": 51849,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.17631224764468373,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H4D32",
+    "n_params": 51849,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.1864064602960969,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9988938053097345
+    }
+  },
+  {
+    "config": "L4H4D32",
+    "n_params": 51849,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.20592193808882908,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H4D32",
+    "n_params": 51849,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.1756393001345895,
+      "horizontal_block": 0.9986979166666666,
+      "vertical_win": 0.9993270524899058,
+      "vertical_block": 0.9986979166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H4D32",
+    "n_params": 51849,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.15746971736204576,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9966814159292036
+    }
+  },
+  {
+    "config": "L4H4D64",
+    "n_params": 201993,
+    "seed": 0,
+    "metrics": {
+      "horizontal_win": 0.21467025572005383,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H4D64",
+    "n_params": 201993,
+    "seed": 2,
+    "metrics": {
+      "horizontal_win": 0.22274562584118437,
+      "horizontal_block": 0.9973958333333334,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  },
+  {
+    "config": "L4H4D64",
+    "n_params": 201993,
+    "seed": 3,
+    "metrics": {
+      "horizontal_win": 0.22409152086137282,
+      "horizontal_block": 0.9947916666666666,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9973958333333334,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9933628318584071
+    }
+  },
+  {
+    "config": "L4H4D64",
+    "n_params": 201993,
+    "seed": 1,
+    "metrics": {
+      "horizontal_win": 0.2173620457604307,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 0.9986979166666666,
+      "diagonal_win": 1.0,
+      "diagonal_block": 0.9966814159292036
+    }
+  },
+  {
+    "config": "L4H4D64",
+    "n_params": 201993,
+    "seed": 4,
+    "metrics": {
+      "horizontal_win": 0.16352624495289367,
+      "horizontal_block": 1.0,
+      "vertical_win": 1.0,
+      "vertical_block": 1.0,
+      "diagonal_win": 1.0,
+      "diagonal_block": 1.0
+    }
+  }
+]

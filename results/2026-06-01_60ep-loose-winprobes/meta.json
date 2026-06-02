@@ -1,0 +1,14 @@
+{
+  "note": "Reconstructed metadata (this run predates automatic meta.json).",
+  "epochs": 60,
+  "lr": 0.001,
+  "batch_size": 256,
+  "max_orderings": 4,
+  "seeds": [0, 1, 2, 3, 4],
+  "n_jobs": 135,
+  "win_probe_definition": "purity only (NOT unique-optimal); win probes could include boards with an alternate winning move, so V/D controls plateaued ~0.85 rather than reaching ceiling",
+  "block_probe_definition": "forced-unique optimal block",
+  "duration_min": 106.9,
+  "approx_git_sha": "971b973",
+  "timestamp": "2026-06-01T18:04"
+}
