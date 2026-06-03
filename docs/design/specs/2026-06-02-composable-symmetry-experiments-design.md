@@ -241,6 +241,33 @@ which individual axes move H_win.
 5. **Output is always a 9-cell distribution**, even for `factored`/`rowcol`, so H_win is
    comparable across all conditions.
 
+## Diagnostic result (E0/E1 fast run)
+
+Run on the refactored pipeline as the first deliverable: 3 configs
+(L1H1D16, L2H2D32, L4H4D64) × 3 seeds × 20 epochs, `max_orderings=4`. Artifacts in
+`results/E0_diag/` and `results/E1_diag/`. Mean H_win/V_win over seeds:
+
+| config | E0 H_win (drop-all) | E1 H_win (keep-all) | E0 V_win (control) |
+|---|---|---|---|
+| L1H1D16 | 0.247 | 0.572 | 0.642 |
+| L2H2D32 | 0.125 | 0.956 | 0.957 |
+| L4H4D64 | 0.169 | 0.995 | 0.994 |
+
+**Random-legal-move baseline on the H-win probe set: 0.40.**
+
+**Finding — the H_win floor is *active suppression*, not failure-to-learn.** Under the
+drop-all filter (E0), H_win (0.12–0.25) sits **below** the 0.40 random baseline at every
+capacity — i.e. *sub-chance* — even as the V_win control climbs to ~0.99. A model that
+had merely failed to learn horizontal offense would score *at* chance; scoring *below* it
+means cross-entropy is actively pushing the horizontal-winning cell's logit down as a
+competing class. The positive control (E1, keep-all) lifts H_win to the V/D ceiling
+(0.57 → 0.99), confirming the filter *causes* the gap rather than some intrinsic
+difficulty of horizontal lines. Every condition must therefore be read against the
+plotted 0.40 chance line, and "near chance" for the main conditions actually means
+"suppressed below chance." (Absolute rates are higher than the prior 60-epoch sweep's
+≈0.05–0.10 because this is a 20-epoch, 3-config diagnostic; the *relationship* — E0 below
+baseline, E1 at ceiling — is the signal.)
+
 ## Scope / non-goals
 
 - Single game (tic-tac-toe) only.
