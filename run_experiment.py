@@ -1,39 +1,83 @@
-"""Run the full sweep and write results + capacity plot to ./results/.
+"""Run symmetry-generalization conditions and write results to ./results/<name>/.
 
-Runs the (config, seed) grid across a process pool. Override worker count with
-the TTT_WORKERS env var (defaults to all cores).
+Each experiment is a composable `Condition` (four orthogonal axes). Run one with
+`--condition E2`, or all Phase-1 conditions with `--condition all` (default).
+Override worker count with `--workers` or the TTT_WORKERS env var.
 """
 from __future__ import annotations
 
-import itertools
+import argparse
 import os
 import time
 
-from ttt.sweep import run_sweep_parallel, aggregate, plot_capacity, save_results
+from ttt.encoding import FLAT, ROWCOL
+from ttt.sweep import (
+    Condition, run_condition, save_condition, horizontal_win_ceiling,
+    STANDARD_GRID, DEEP_GRID,
+)
 
-GRID = list(itertools.product([1, 2, 4], [1, 2, 4], [16, 32, 64]))
-# Keep only configs where d_model is divisible by n_head.
-GRID = [(L, H, D) for (L, H, D) in GRID if D % H == 0]
-SEEDS = [0, 1, 2, 3, 4]
+# Phase-1 matrix: each varies ONE axis off the baseline
+# (flat encoding, flat9 head, drop-all filter, standard grid).
+CONDITIONS = {
+    "E0": Condition("E0", encoding=FLAT, head="flat9",
+                    drop_horizontal_rows=frozenset({0, 1, 2}), grid=STANDARD_GRID),
+    "E1": Condition("E1", encoding=FLAT, head="flat9",
+                    drop_horizontal_rows=frozenset(), grid=STANDARD_GRID),
+    "E2": Condition("E2", encoding=ROWCOL, head="flat9",
+                    drop_horizontal_rows=frozenset({0, 1, 2}), grid=STANDARD_GRID),
+    "E3": Condition("E3", encoding=FLAT, head="flat9",
+                    drop_horizontal_rows=frozenset({1, 2}), grid=STANDARD_GRID),
+    "E4": Condition("E4", encoding=FLAT, head="flat9",
+                    drop_horizontal_rows=frozenset({0, 1, 2}), grid=DEEP_GRID),
+    "E5a": Condition("E5a", encoding=FLAT, head="tied",
+                     drop_horizontal_rows=frozenset({0, 1, 2}), grid=STANDARD_GRID),
+    "E5b": Condition("E5b", encoding=FLAT, head="factored",
+                     drop_horizontal_rows=frozenset({0, 1, 2}), grid=STANDARD_GRID),
+}
+PHASE1 = ["E0", "E1", "E2", "E3", "E4", "E5a", "E5b"]
+
+
+def run_one(name, n_workers, ceiling=None):
+    cond = CONDITIONS[name]
+    out_dir = os.path.join("results", name)
+    n_jobs = len(cond.grid) * len(cond.seeds)
+    print(f"=== {name}: {n_jobs} jobs "
+          f"({len(cond.grid)} configs x {len(cond.seeds)} seeds), "
+          f"encoding={cond.encoding.name}, head={cond.head}, "
+          f"drop={sorted(cond.drop_horizontal_rows)} ===")
+    t0 = time.time()
+    raw = run_condition(cond, n_workers=n_workers, progress=True)
+    agg, _ = save_condition(cond, raw, out_dir, ceiling=ceiling)
+    print(f"  {name} finished in {(time.time() - t0) / 60:.1f} min -> {out_dir}/")
+    return agg
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--condition", default="all",
+                        choices=["all"] + PHASE1)
+    parser.add_argument("--workers", type=int,
+                        default=int(os.environ.get("TTT_WORKERS",
+                                                   os.cpu_count() or 1)))
+    args = parser.parse_args()
+
     os.makedirs("results", exist_ok=True)
-    n_workers = int(os.environ.get("TTT_WORKERS", os.cpu_count() or 1))
-    n_jobs = len(GRID) * len(SEEDS)
-    print(f"Running {n_jobs} jobs ({len(GRID)} configs x {len(SEEDS)} seeds) "
-          f"on {n_workers} workers...")
-    t0 = time.time()
-    raw = run_sweep_parallel(
-        grid=GRID, seeds=SEEDS,
-        epochs=150, lr=1e-3, batch_size=256, max_orderings=4,
-        n_workers=n_workers, progress=True,
-    )
-    print(f"Sweep finished in {(time.time() - t0) / 60:.1f} min")
-    agg = aggregate(raw)
-    save_results(raw, agg, "results/raw.json", "results/agg.json")
-    plot_capacity(agg, "results/capacity.png")
-    print("Wrote results/raw.json, results/agg.json, results/capacity.png")
+    names = PHASE1 if args.condition == "all" else [args.condition]
+
+    # When running the full set, compute the positive-control (E1) ceiling first
+    # and overlay it on the other flat/standard-grid conditions' plots.
+    ceiling = None
+    aggs = {}
+    if "E1" in names:
+        aggs["E1"] = run_one("E1", args.workers)
+        ceiling = horizontal_win_ceiling(aggs["E1"])
+        names = [n for n in names if n != "E1"]
+
+    for name in names:
+        # Ceiling overlay only makes sense at matched params (flat, standard grid).
+        use_ceiling = ceiling if CONDITIONS[name].encoding.name == "flat" \
+            and CONDITIONS[name].grid == STANDARD_GRID else None
+        aggs[name] = run_one(name, args.workers, ceiling=use_ceiling)
 
 
 if __name__ == "__main__":
