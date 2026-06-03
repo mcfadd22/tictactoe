@@ -4,6 +4,7 @@ import torch
 
 from ttt.board import EMPTY, legal_moves
 from ttt.probes import probe_prefixes
+from ttt.encoding import FLAT
 
 
 @torch.no_grad()
@@ -18,7 +19,7 @@ def model_move(model, input_ids, board, device="cpu"):
     return int(logits.argmax().item())
 
 
-def evaluate_probes(model, probes, paths, max_orderings=4, device="cpu"):
+def evaluate_probes(model, probes, paths, encoding=FLAT, max_orderings=4, device="cpu"):
     """Fraction of (probe, ordering) pairs where the model plays the target cell.
 
     Also returns order_invariance: fraction of probes whose chosen move is the
@@ -27,7 +28,8 @@ def evaluate_probes(model, probes, paths, max_orderings=4, device="cpu"):
     hits, total = 0, 0
     invariant_probes, probes_with_orderings = 0, 0
     for board, target in probes:
-        prefixes = probe_prefixes(board, paths, max_orderings=max_orderings)
+        prefixes = probe_prefixes(board, paths, encoding=encoding,
+                                  max_orderings=max_orderings)
         if not prefixes:
             continue
         moves = []

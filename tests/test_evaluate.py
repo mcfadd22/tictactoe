@@ -3,6 +3,7 @@ from ttt.board import EMPTY, legal_moves
 from ttt.evaluate import model_move, evaluate_probes, random_baseline_rate
 from ttt.enumerate import reachable_paths
 from ttt.probes import win_available_probes
+from ttt.encoding import ROWCOL
 
 
 class _AlwaysCellModel(torch.nn.Module):
@@ -34,6 +35,17 @@ def test_evaluate_probes_perfect_when_model_targets_correct_cell():
     rates = evaluate_probes(_AlwaysCellModel(4), probes, paths, max_orderings=4)
     assert 0.0 <= rates["rate"] <= 1.0
     assert 0.0 <= rates["order_invariance"] <= 1.0
+
+
+def test_evaluate_probes_accepts_encoding_kwarg():
+    probes = win_available_probes("vertical")[:5]
+    paths = reachable_paths(max_orderings=4)
+    # _AlwaysCellModel ignores its inputs, so the rate is well-defined regardless
+    # of encoding; the point is that threading ROWCOL through does not error.
+    res = evaluate_probes(_AlwaysCellModel(4), probes, paths,
+                          encoding=ROWCOL, max_orderings=4)
+    assert 0.0 <= res["rate"] <= 1.0
+    assert res["n_probes"] >= 1
 
 
 def test_random_baseline_between_zero_and_one():
