@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+from functools import partial
 
 import numpy as np
 import torch
@@ -8,6 +9,7 @@ from torch.utils.data import DataLoader
 
 from ttt.model import TTTGPT, GPTConfig
 from ttt.dataset import TTTDataset, collate_fn
+from ttt.encoding import FLAT
 
 
 def _set_seed(seed):
@@ -17,7 +19,7 @@ def _set_seed(seed):
 
 
 def train_model(cfg: GPTConfig, examples, *, epochs, lr, batch_size,
-                seed, device="cpu"):
+                seed, encoding=FLAT, device="cpu"):
     """Train a model by next-move cross-entropy. Returns (model, loss_history)."""
     _set_seed(seed)
     g = torch.Generator()
@@ -26,7 +28,7 @@ def train_model(cfg: GPTConfig, examples, *, epochs, lr, batch_size,
         TTTDataset(examples),
         batch_size=batch_size,
         shuffle=True,
-        collate_fn=collate_fn,
+        collate_fn=partial(collate_fn, pad_id=encoding.pad_id),
         generator=g,
     )
     model = TTTGPT(cfg).to(device)

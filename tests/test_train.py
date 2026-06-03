@@ -2,6 +2,19 @@ import torch
 from ttt.model import GPTConfig
 from ttt.train import train_model
 from ttt.dataset import BOS_ID
+from ttt.encoding import ROWCOL
+from ttt.model import GPTConfig as _GPTConfig
+
+
+def test_train_runs_with_rowcol_encoding_and_pad_id():
+    # rowcol prefixes: BOS=6, ROW/COL tokens; train must pad with ROWCOL.pad_id=7.
+    examples = [([6, 0, 3, 1, 4], 8), ([6, 2, 5], 0)]
+    cfg = _GPTConfig(n_layer=1, n_head=1, d_model=16,
+                     vocab_size=ROWCOL.vocab_size, max_len=ROWCOL.max_len)
+    model, history = train_model(
+        cfg, examples, epochs=3, lr=1e-2, batch_size=2, seed=0, encoding=ROWCOL,
+    )
+    assert len(history) == 3  # ran without an index/pad error
 
 
 def test_train_reduces_loss_and_returns_model():
