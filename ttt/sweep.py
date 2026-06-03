@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import statistics
+from dataclasses import dataclass
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import matplotlib
@@ -14,17 +15,32 @@ from ttt.train import train_model
 from ttt.dataset import build_examples
 from ttt.enumerate import reachable_paths
 from ttt.probes import win_available_probes, block_needed_probes
-from ttt.evaluate import evaluate_probes
+from ttt.evaluate import evaluate_probes, random_baseline_rate
+from ttt.encoding import FLAT
 
-# Metrics evaluated per trained model.
+# Metrics evaluated per trained model. (kind, line_type, rows-or-None)
 PROBE_SPECS = {
-    "horizontal_win": ("win", "horizontal"),
-    "horizontal_block": ("block", "horizontal"),
-    "vertical_win": ("win", "vertical"),
-    "vertical_block": ("block", "vertical"),
-    "diagonal_win": ("win", "diagonal"),
-    "diagonal_block": ("block", "diagonal"),
+    "horizontal_win": ("win", "horizontal", None),
+    "horizontal_block": ("block", "horizontal", None),
+    "vertical_win": ("win", "vertical", None),
+    "vertical_block": ("block", "vertical", None),
+    "diagonal_win": ("win", "diagonal", None),
+    "diagonal_block": ("block", "diagonal", None),
+    # Per-row horizontal wins drive the translational (E3) seen-vs-held-out split.
+    "horizontal_win_row0": ("win", "horizontal", frozenset({0})),
+    "horizontal_win_row1": ("win", "horizontal", frozenset({1})),
+    "horizontal_win_row2": ("win", "horizontal", frozenset({2})),
 }
+
+STANDARD_GRID = tuple(
+    (L, H, D)
+    for L in (1, 2, 4) for H in (1, 2, 4) for D in (16, 32, 64)
+    if D % H == 0
+)
+# Depth experiment (E4) appends L8; same width/head sub-grid.
+DEEP_GRID = STANDARD_GRID + tuple(
+    (8, H, D) for H in (1, 2, 4) for D in (16, 32, 64) if D % H == 0
+)
 
 
 def config_name(n_layer, n_head, d_model):
@@ -33,27 +49,33 @@ def config_name(n_layer, n_head, d_model):
 
 def _build_probe_sets():
     sets = {}
-    for name, (kind, line_type) in PROBE_SPECS.items():
+    for name, (kind, line_type, rows) in PROBE_SPECS.items():
         if kind == "win":
-            sets[name] = win_available_probes(line_type)
+            sets[name] = win_available_probes(line_type, rows=rows)
         else:
-            sets[name] = block_needed_probes(line_type)
+            sets[name] = block_needed_probes(line_type, rows=rows)
     return sets
 
 
 def _train_and_eval(config, seed, examples, paths, probe_sets, *,
-                    epochs, lr, batch_size, max_orderings):
+                    epochs, lr, batch_size, max_orderings,
+                    encoding=FLAT, head="flat9"):
     """Train one (config, seed) and evaluate all probe metrics. Returns a raw row.
 
-    Shared by the sequential and parallel sweeps so both produce identical rows.
+    Shared by run_sweep, run_sweep_parallel, and run_condition so all three
+    produce identically shaped rows.
     """
     n_layer, n_head, d_model = config
-    cfg = GPTConfig(n_layer=n_layer, n_head=n_head, d_model=d_model)
+    cfg = GPTConfig(
+        n_layer=n_layer, n_head=n_head, d_model=d_model,
+        vocab_size=encoding.vocab_size, max_len=encoding.max_len, head=head,
+    )
     model, _ = train_model(
-        cfg, examples, epochs=epochs, lr=lr, batch_size=batch_size, seed=seed,
+        cfg, examples, epochs=epochs, lr=lr, batch_size=batch_size,
+        seed=seed, encoding=encoding,
     )
     metrics = {
-        name: evaluate_probes(model, probes, paths,
+        name: evaluate_probes(model, probes, paths, encoding=encoding,
                               max_orderings=max_orderings)["rate"]
         for name, probes in probe_sets.items()
     }
@@ -157,8 +179,10 @@ def aggregate(raw):
     return agg
 
 
-def plot_capacity(agg, out_path):
-    """Horizontal win/block vs. capacity, with vertical/diagonal controls.
+def plot_capacity(agg, out_path, baselines=None, ceiling=None):
+    """Horizontal win/block vs. capacity, with vertical/diagonal controls,
+    an optional random-baseline 'chance' line, and an optional positive-control
+    ceiling overlay.
 
     Several configs can share a parameter count (n_head does not change the
     parameter count), so configs are grouped by n_params and averaged, giving
@@ -187,6 +211,13 @@ def plot_capacity(agg, out_path):
             means.append(statistics.fmean(vals))
             stds.append(statistics.stdev(vals) if len(vals) > 1 else 0.0)
         ax.errorbar(xs, means, yerr=stds, marker="o", capsize=3, label=label)
+    if baselines and "horizontal_win" in baselines:
+        ax.axhline(baselines["horizontal_win"], ls="--", color="gray",
+                   label="random baseline (H-win)")
+    if ceiling:
+        cxs = sorted(ceiling)
+        ax.plot(cxs, [ceiling[x] for x in cxs], ls=":", color="green",
+                marker="^", label="positive-control ceiling (H-win)")
     ax.set_xlabel("model parameters")
     ax.set_ylabel("probe success rate")
     ax.set_ylim(-0.02, 1.02)
@@ -202,3 +233,111 @@ def save_results(raw, agg, raw_path, agg_path):
         json.dump(raw, f, indent=2)
     with open(agg_path, "w") as f:
         json.dump(agg, f, indent=2)
+
+
+# --- Conditions: one composable experiment per dataclass instance -----------
+
+@dataclass(frozen=True)
+class Condition:
+    """A single experiment = a setting of the four orthogonal axes plus run
+    hyperparameters. Combining axes needs no new code, only a new Condition."""
+    name: str
+    encoding: object = FLAT
+    head: str = "flat9"
+    drop_horizontal_rows: frozenset = frozenset({0, 1, 2})
+    grid: tuple = STANDARD_GRID
+    seeds: tuple = (0, 1, 2, 3, 4)
+    epochs: int = 150
+    lr: float = 1e-3
+    batch_size: int = 256
+    max_orderings: int = 4
+
+    def __post_init__(self):
+        if self.head not in ("flat9", "tied", "factored"):
+            raise ValueError(f"unknown head: {self.head}")
+        if self.head == "tied" and self.encoding.name != "flat":
+            raise ValueError("tied head requires the flat encoding (1:1 cell<->token)")
+
+
+_COND_WORKER = {}
+
+
+def _cond_worker_init(encoding, drop_horizontal_rows, max_orderings):
+    import torch
+    torch.set_num_threads(1)
+    _COND_WORKER["examples"] = build_examples(
+        encoding, drop_horizontal_rows=drop_horizontal_rows,
+        max_orderings=max_orderings,
+    )
+    _COND_WORKER["paths"] = reachable_paths(max_orderings=max_orderings)
+    _COND_WORKER["probe_sets"] = _build_probe_sets()
+    _COND_WORKER["encoding"] = encoding
+    _COND_WORKER["max_orderings"] = max_orderings
+
+
+def _cond_worker_task(args):
+    config, seed, head, epochs, lr, batch_size = args
+    return _train_and_eval(
+        config, seed,
+        _COND_WORKER["examples"], _COND_WORKER["paths"], _COND_WORKER["probe_sets"],
+        epochs=epochs, lr=lr, batch_size=batch_size,
+        max_orderings=_COND_WORKER["max_orderings"],
+        encoding=_COND_WORKER["encoding"], head=head,
+    )
+
+
+def run_condition(cond: Condition, *, n_workers=None, progress=False):
+    """Train the condition's (config, seed) grid across a process pool and
+    evaluate every probe metric. Returns raw rows (same shape as run_sweep)."""
+    if n_workers is None:
+        n_workers = os.cpu_count() or 1
+    tasks = [
+        (config, seed, cond.head, cond.epochs, cond.lr, cond.batch_size)
+        for config in cond.grid
+        for seed in cond.seeds
+    ]
+    raw = []
+    with ProcessPoolExecutor(
+        max_workers=n_workers,
+        initializer=_cond_worker_init,
+        initargs=(cond.encoding, cond.drop_horizontal_rows, cond.max_orderings),
+    ) as pool:
+        futures = [pool.submit(_cond_worker_task, t) for t in tasks]
+        for i, fut in enumerate(as_completed(futures), 1):
+            raw.append(fut.result())
+            if progress:
+                print(f"  [{cond.name} {i}/{len(tasks)}] done", flush=True)
+    return raw
+
+
+def compute_random_baselines():
+    """Uniform-random-legal-move hit-rate per probe set (the 'chance' line)."""
+    probe_sets = _build_probe_sets()
+    return {name: random_baseline_rate(probes)
+            for name, probes in probe_sets.items()}
+
+
+def save_condition(cond: Condition, raw, out_dir, ceiling=None):
+    """Aggregate, persist, and plot one condition into out_dir/.
+
+    `ceiling`, if given, is a {n_params: horizontal_win_mean} map (e.g. from the
+    positive-control E1) drawn as an upper reference on the plot.
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    agg = aggregate(raw)
+    baselines = compute_random_baselines()
+    save_results(raw, agg,
+                 os.path.join(out_dir, "raw.json"),
+                 os.path.join(out_dir, "agg.json"))
+    with open(os.path.join(out_dir, "baselines.json"), "w") as f:
+        json.dump(baselines, f, indent=2)
+    plot_capacity(agg, os.path.join(out_dir, "capacity.png"),
+                  baselines=baselines, ceiling=ceiling)
+    return agg, baselines
+
+
+def horizontal_win_ceiling(agg):
+    """{n_params: horizontal_win mean} from a (positive-control) condition's agg,
+    suitable to pass as `save_condition(..., ceiling=...)`."""
+    return {entry["n_params"]: entry["horizontal_win"]["mean"]
+            for entry in agg.values() if "horizontal_win" in entry}

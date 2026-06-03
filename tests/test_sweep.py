@@ -1,5 +1,64 @@
 import os
+import json
+import pytest
+from ttt.encoding import FLAT, ROWCOL
 from ttt.sweep import aggregate, plot_capacity
+from ttt.sweep import (
+    Condition, run_condition, save_condition, compute_random_baselines,
+    STANDARD_GRID, DEEP_GRID,
+)
+
+
+def test_standard_grid_excludes_indivisible_configs():
+    for (L, H, D) in STANDARD_GRID:
+        assert D % H == 0
+    assert (1, 1, 16) in STANDARD_GRID
+    assert all(D % H == 0 for (L, H, D) in DEEP_GRID)
+    assert any(L == 8 for (L, H, D) in DEEP_GRID)  # depth grid adds L8
+
+
+def test_condition_rejects_tied_with_rowcol():
+    with pytest.raises(ValueError):
+        Condition("bad", encoding=ROWCOL, head="tied")
+
+
+def test_condition_rejects_unknown_head():
+    with pytest.raises(ValueError):
+        Condition("bad", head="nonsense")
+
+
+def test_compute_random_baselines_has_horizontal_win_in_range():
+    base = compute_random_baselines()
+    assert 0.0 < base["horizontal_win"] < 1.0
+    assert "horizontal_win_row0" in base
+
+
+def test_run_condition_smoke_produces_per_row_metrics():
+    cond = Condition(
+        "smoke", encoding=FLAT, head="flat9",
+        drop_horizontal_rows=frozenset({0, 1, 2}),
+        grid=((1, 1, 16),), seeds=(0,),
+        epochs=2, lr=1e-2, batch_size=256, max_orderings=2,
+    )
+    raw = run_condition(cond, n_workers=1)
+    assert len(raw) == 1
+    metrics = raw[0]["metrics"]
+    for key in ("horizontal_win", "horizontal_win_row0",
+                "horizontal_win_row1", "horizontal_win_row2", "vertical_win"):
+        assert key in metrics
+
+
+def test_save_condition_writes_artifacts(tmp_path):
+    cond = Condition(
+        "smoke", grid=((1, 1, 16),), seeds=(0,),
+        epochs=2, lr=1e-2, batch_size=256, max_orderings=2,
+    )
+    raw = run_condition(cond, n_workers=1)
+    save_condition(cond, raw, str(tmp_path))
+    for fname in ("raw.json", "agg.json", "baselines.json", "capacity.png"):
+        assert (tmp_path / fname).exists()
+    base = json.loads((tmp_path / "baselines.json").read_text())
+    assert "horizontal_win" in base
 
 
 def test_aggregate_means_and_stds_over_seeds():
