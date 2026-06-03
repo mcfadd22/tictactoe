@@ -1,6 +1,51 @@
 from ttt.board import P1, P2, EMPTY, current_player, move_completes_horizontal
 from ttt.probes import win_available_probes, block_needed_probes, probe_prefixes
 from ttt.enumerate import reachable_paths
+from ttt.encoding import ROWCOL
+from ttt.board import horizontal_row_completed_by_move, current_player
+
+
+def test_win_rows_filter_restricts_to_requested_rows():
+    all_h = win_available_probes("horizontal")
+    row0 = win_available_probes("horizontal", rows=frozenset({0}))
+    rows12 = win_available_probes("horizontal", rows=frozenset({1, 2}))
+    assert len(row0) > 0
+    # every row-0 probe completes row 0; none of rows12 complete row 0
+    for board, target in row0:
+        assert horizontal_row_completed_by_move(board, target) == 0
+    for board, target in rows12:
+        assert horizontal_row_completed_by_move(board, target) in (1, 2)
+    # the partition covers the whole set (rows 0,1,2 are exhaustive)
+    assert len(row0) + len(rows12) == len(all_h)
+
+
+def test_block_rows_filter_restricts_to_requested_rows():
+    from ttt.board import P1, P2
+    blocked = block_needed_probes("horizontal", rows=frozenset({0}))
+    for board, target in blocked:
+        player = current_player(board)
+        opp = P2 if player == P1 else P1
+        after = list(board)
+        after[target] = opp
+        # the defended horizontal line is row 0
+        from ttt.board import HORIZONTAL_LINES
+        assert any(target in ln and all(after[j] == opp for j in ln)
+                   and HORIZONTAL_LINES.index(ln) == 0
+                   for ln in HORIZONTAL_LINES)
+
+
+def test_probe_prefixes_use_the_given_encoding():
+    from ttt.board import EMPTY_BOARD, apply_move
+    paths = reachable_paths(max_orderings=4)
+    board, _ = win_available_probes("vertical")[0]
+    prefixes = probe_prefixes(board, paths, encoding=ROWCOL, max_orderings=4)
+    assert len(prefixes) >= 1
+    for pref in prefixes:
+        assert pref[0] == ROWCOL.bos_id
+        replay = EMPTY_BOARD
+        for cell in ROWCOL.decode_path(pref):
+            replay = apply_move(replay, cell)
+        assert replay == board
 
 
 def test_win_available_targets_complete_their_line_type():
