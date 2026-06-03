@@ -22,6 +22,7 @@ def test_win_rows_filter_restricts_to_requested_rows():
 def test_block_rows_filter_restricts_to_requested_rows():
     from ttt.board import P1, P2
     blocked = block_needed_probes("horizontal", rows=frozenset({0}))
+    assert len(blocked) > 0  # guard against a vacuously-passing empty loop
     for board, target in blocked:
         player = current_player(board)
         opp = P2 if player == P1 else P1
