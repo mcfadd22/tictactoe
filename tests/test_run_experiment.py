@@ -22,3 +22,10 @@ def test_condition_axes_match_the_design_matrix():
 def test_all_phase1_conditions_use_five_seeds():
     for name in PHASE1:
         assert len(CONDITIONS[name].seeds) == 5
+
+
+def test_push_results_flag_defaults_off():
+    from run_experiment import build_parser
+    assert build_parser().parse_args(["--condition", "E0"]).push_results is False
+    assert build_parser().parse_args(
+        ["--condition", "E0", "--push-results"]).push_results is True

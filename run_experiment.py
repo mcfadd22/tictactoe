@@ -3,6 +3,10 @@
 Each experiment is a composable `Condition` (four orthogonal axes). Run one with
 `--condition E2`, or all Phase-1 conditions with `--condition all` (default).
 Override worker count with `--workers` or the TTT_WORKERS env var.
+
+Pass `--push-results` (for headless VM runs) to commit and push each condition's
+`results/<name>/` to the current branch as it finishes. See
+docs/design/specs/2026-06-03-results-git-sync-design.md for VM setup.
 """
 from __future__ import annotations
 
@@ -11,6 +15,7 @@ import os
 import time
 
 from ttt.encoding import FLAT, ROWCOL
+from ttt.gitsync import sync_results
 from ttt.sweep import (
     Condition, run_condition, save_condition, horizontal_win_ceiling,
     STANDARD_GRID, DEEP_GRID,
@@ -37,7 +42,7 @@ CONDITIONS = {
 PHASE1 = ["E0", "E1", "E2", "E3", "E4", "E5a", "E5b"]
 
 
-def run_one(name, n_workers, ceiling=None):
+def run_one(name, n_workers, ceiling=None, push_results=False):
     cond = CONDITIONS[name]
     out_dir = os.path.join("results", name)
     n_jobs = len(cond.grid) * len(cond.seeds)
@@ -49,17 +54,30 @@ def run_one(name, n_workers, ceiling=None):
     raw = run_condition(cond, n_workers=n_workers, progress=True)
     agg, _ = save_condition(cond, raw, out_dir, ceiling=ceiling)
     print(f"  {name} finished in {(time.time() - t0) / 60:.1f} min -> {out_dir}/")
+    if push_results:
+        # Forward-slash path so the pathspec is portable across shells.
+        message = (f"results: {name} ({len(cond.grid)} configs x "
+                   f"{len(cond.seeds)} seeds, encoding={cond.encoding.name}, "
+                   f"head={cond.head})")
+        sync_results([f"results/{name}"], message)
     return agg
 
 
-def main():
+def build_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--condition", default="all",
                         choices=["all"] + PHASE1)
     parser.add_argument("--workers", type=int,
                         default=int(os.environ.get("TTT_WORKERS",
                                                    os.cpu_count() or 1)))
-    args = parser.parse_args()
+    parser.add_argument("--push-results", action="store_true",
+                        help="commit and push each condition's results to the "
+                             "current branch as it finishes (for VM runs)")
+    return parser
+
+
+def main():
+    args = build_parser().parse_args()
 
     os.makedirs("results", exist_ok=True)
     names = PHASE1 if args.condition == "all" else [args.condition]
@@ -69,7 +87,7 @@ def main():
     ceiling = None
     aggs = {}
     if "E1" in names:
-        aggs["E1"] = run_one("E1", args.workers)
+        aggs["E1"] = run_one("E1", args.workers, push_results=args.push_results)
         ceiling = horizontal_win_ceiling(aggs["E1"])
         names = [n for n in names if n != "E1"]
 
@@ -77,7 +95,8 @@ def main():
         # Ceiling overlay only makes sense at matched params (flat, standard grid).
         use_ceiling = ceiling if CONDITIONS[name].encoding.name == "flat" \
             and CONDITIONS[name].grid == STANDARD_GRID else None
-        aggs[name] = run_one(name, args.workers, ceiling=use_ceiling)
+        aggs[name] = run_one(name, args.workers, ceiling=use_ceiling,
+                             push_results=args.push_results)
 
 
 if __name__ == "__main__":
