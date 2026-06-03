@@ -65,6 +65,10 @@ def _train_and_eval(config, seed, examples, paths, probe_sets, *,
     Shared by run_sweep, run_sweep_parallel, and run_condition so all three
     produce identically shaped rows.
     """
+    if head == "tied" and encoding.name != "flat":
+        # Defense-in-depth: Condition rejects this too, but guard the lower
+        # entry point so a tied readout never silently indexes non-cell tokens.
+        raise ValueError("tied head requires the flat encoding (1:1 cell<->token)")
     n_layer, n_head, d_model = config
     cfg = GPTConfig(
         n_layer=n_layer, n_head=n_head, d_model=d_model,

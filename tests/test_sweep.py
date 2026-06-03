@@ -151,3 +151,32 @@ def test_parallel_is_deterministic():
     a = run_sweep_parallel([(1, 1, 16)], [0], n_workers=2, **kw)
     b = run_sweep_parallel([(1, 1, 16)], [0], n_workers=2, **kw)
     assert a[0]["metrics"] == b[0]["metrics"]
+
+
+def test_train_and_eval_rejects_tied_with_rowcol():
+    # Defense-in-depth guard at the lower entry point (below Condition).
+    from ttt.sweep import _train_and_eval
+    with pytest.raises(ValueError):
+        _train_and_eval(
+            (1, 1, 16), 0, [], {}, {},
+            epochs=1, lr=1e-2, batch_size=256, max_orderings=2,
+            encoding=ROWCOL, head="tied",
+        )
+
+
+def test_run_condition_rowcol_end_to_end():
+    # Locks in the highest-risk axis: a real model trained on the ROWCOL dataset,
+    # then probed via ROWCOL-encoded prefixes through evaluate. Exercises the full
+    # encode -> train -> probe_prefixes -> evaluate chain (not a stub model).
+    cond = Condition(
+        "rowcol_smoke", encoding=ROWCOL, head="flat9",
+        drop_horizontal_rows=frozenset({0, 1, 2}),
+        grid=((1, 1, 16),), seeds=(0,),
+        epochs=2, lr=1e-2, batch_size=256, max_orderings=2,
+    )
+    raw = run_condition(cond, n_workers=1)
+    assert len(raw) == 1
+    metrics = raw[0]["metrics"]
+    # Controls present and a real rate in [0, 1] (the model actually ran on rowcol).
+    assert 0.0 <= metrics["vertical_win"] <= 1.0
+    assert 0.0 <= metrics["horizontal_win"] <= 1.0
