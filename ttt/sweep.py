@@ -16,7 +16,7 @@ from ttt.dataset import build_examples
 from ttt.enumerate import reachable_paths
 from ttt.probes import win_available_probes, block_needed_probes
 from ttt.evaluate import evaluate_probes, random_baseline_rate
-from ttt.encoding import FLAT
+from ttt.encoding import FLAT, Encoding
 
 # Metrics evaluated per trained model. (kind, line_type, rows-or-None)
 PROBE_SPECS = {
@@ -242,7 +242,7 @@ class Condition:
     """A single experiment = a setting of the four orthogonal axes plus run
     hyperparameters. Combining axes needs no new code, only a new Condition."""
     name: str
-    encoding: object = FLAT
+    encoding: Encoding = FLAT
     head: str = "flat9"
     drop_horizontal_rows: frozenset = frozenset({0, 1, 2})
     grid: tuple = STANDARD_GRID

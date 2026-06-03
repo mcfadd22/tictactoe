@@ -95,6 +95,28 @@ def test_plot_capacity_writes_file(tmp_path):
     assert os.path.getsize(out) > 0
 
 
+def test_plot_capacity_with_baselines_and_ceiling_overlays(tmp_path):
+    # Exercise the optional overlay branches (random-baseline line + ceiling line).
+    agg = {
+        "L1H1D16": {"n_params": 100,
+                     "horizontal_win": {"mean": 0.1, "std": 0.05},
+                     "horizontal_block": {"mean": 0.9, "std": 0.05},
+                     "vertical_win": {"mean": 1.0, "std": 0.0},
+                     "diagonal_win": {"mean": 1.0, "std": 0.0}},
+        "L2H2D32": {"n_params": 500,
+                     "horizontal_win": {"mean": 0.6, "std": 0.1},
+                     "horizontal_block": {"mean": 0.95, "std": 0.02},
+                     "vertical_win": {"mean": 1.0, "std": 0.0},
+                     "diagonal_win": {"mean": 1.0, "std": 0.0}},
+    }
+    out = tmp_path / "capacity.png"
+    plot_capacity(agg, str(out),
+                  baselines={"horizontal_win": 0.12},
+                  ceiling={100: 0.9, 500: 0.95})
+    assert os.path.exists(out)
+    assert os.path.getsize(out) > 0
+
+
 def test_parallel_matches_sequential():
     # Both pinned to a single torch thread so the sequential reference and the
     # single-thread workers produce bit-identical results.
