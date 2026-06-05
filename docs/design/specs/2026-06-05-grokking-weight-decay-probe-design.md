@@ -82,9 +82,13 @@ observe them.
 ### 3. New `Condition` fields + grok conditions (`ttt/sweep.py`, `run_experiment.py`)
 
 - `Condition` gains `weight_decay: float = 0.0` and `eval_every: int = 0`.
-- New `GROK_GRID`: three configs spanning capacity —
-  `L1H1D16` (3,801 params), `L2H2D32` (26,441), `L4H2D64` (201,993, the config
-  that overfit under E_AUG).
+- New `GROK_GRID`: two small configs — `L1H1D16` (3,801 params) and
+  `L2H2D32` (26,441). Grokking is reliably observed on *small* models under
+  weight decay, so the probe weights small. The large `L4H2D64` (201,993) is
+  deliberately excluded: it is the least grokking-relevant config and at 20k
+  epochs costs ~29 h/run (measured), ~72% of the probe's total compute on its
+  own. Its overfitting behavior is already documented under E_AUG and is cited
+  rather than re-run here.
 - New condition entries: **{E0, E3} base × weight_decay {0.0, 0.01, 0.1, 1.0}**,
   at long epochs. Naming: `E_GROK_<base>_wd<value>` (e.g. `E_GROK_E0_wd0.1`).
   The `wd=0.0` arm is the **long-training control** — it isolates "did weight
@@ -92,9 +96,15 @@ observe them.
 - Parameters (all easily tunable in one place):
   - epochs = **20,000**, `eval_every` = **100** → 200-point curves
   - seeds = **(0, 1, 2)** (reduced from 5; each run is ~130× longer)
-  - Compute: 3 configs × 4 WD × 2 bases × 3 seeds = **72 runs × 20k epochs**.
-    Tiny models; expected low single-digit hours on the process pool. Trim via
-    seed/WD/config counts if needed.
+  - Runs: 2 configs × 4 WD × 2 bases × 3 seeds = **48 runs × 20k epochs**.
+  - Measured cost (i9-14900HX, 1 torch thread/worker, single-process timing):
+    L1H1D16 ≈ 665 ms/epoch → ~3.9 h/run; L2H2D32 ≈ 1.28 s/epoch → ~7.4 h/run.
+    The per-100-epoch eval hook is ≤15 min/run (negligible). With 24 cores /
+    32 threads the 48 runs fit in roughly one parallel wave, so wall-clock is
+    bounded by the longest single run (~7.4 h) plus core-contention/thermal
+    margin → **expect ~overnight (≈8–12 h)**. (Earlier "low single-digit hours"
+    estimate was wrong by ~10×; this dataset is ~21.5k examples, ~84
+    batches/epoch.)
 
 ### 4. Outputs (`ttt/sweep.py`)
 
