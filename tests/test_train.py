@@ -42,8 +42,9 @@ def test_seed_is_deterministic():
     assert torch.allclose(p1, p2)
 
 
-def test_weight_decay_zero_matches_default_behavior():
-    # AdamW(weight_decay=0) must reproduce the prior Adam path exactly (same seed).
+def test_weight_decay_default_equals_explicit_zero():
+    # Default weight_decay=0.0 must produce identical weights to weight_decay=0.0
+    # passed explicitly (guards that the default is correctly wired).
     examples = [([BOS_ID, 0, 1], 2), ([BOS_ID, 3, 4], 5)]
     cfg = GPTConfig(n_layer=1, n_head=1, d_model=16)
     m1, _ = train_model(cfg, examples, epochs=5, lr=1e-2, batch_size=8, seed=7)
@@ -55,6 +56,7 @@ def test_weight_decay_zero_matches_default_behavior():
 
 
 def test_weight_decay_changes_trained_weights():
+    # weight_decay=1.0 is large enough to visibly move weights within 20 epochs.
     examples = [([BOS_ID, 0, 1], 2), ([BOS_ID, 3, 4], 5)]
     cfg = GPTConfig(n_layer=1, n_head=1, d_model=16)
     m0, _ = train_model(cfg, examples, epochs=20, lr=1e-2, batch_size=8, seed=7,
