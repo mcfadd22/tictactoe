@@ -62,6 +62,9 @@ def train_model(cfg: GPTConfig, examples, *, epochs, lr, batch_size,
         if eval_hook is not None and eval_every > 0 and (
             epoch % eval_every == 0 or epoch == epochs
         ):
-            eval_hook(model, epoch, mean_loss)
-            model.train()  # hook puts the model in eval mode; restore for training
+            try:
+                with torch.no_grad():
+                    eval_hook(model, epoch, mean_loss)
+            finally:
+                model.train()  # hook may put the model in eval mode; always restore
     return model, history

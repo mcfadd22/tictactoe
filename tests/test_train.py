@@ -97,3 +97,14 @@ def test_no_eval_hook_is_default_noop():
     cfg = GPTConfig(n_layer=1, n_head=1, d_model=16)
     model, history = train_model(cfg, examples, epochs=3, lr=1e-2, batch_size=8, seed=0)
     assert len(history) == 3  # unchanged (model, history) return, no hook required
+
+
+def test_eval_hook_eval_mode_is_restored():
+    # A hook that flips the model to eval mode must not leave it there.
+    examples = [([BOS_ID, 0, 1], 2)]
+    cfg = GPTConfig(n_layer=1, n_head=1, d_model=16)
+    def hook(model, epoch, train_loss):
+        model.eval()
+    model, _ = train_model(cfg, examples, epochs=4, lr=1e-2, batch_size=8, seed=0,
+                           eval_every=2, eval_hook=hook)
+    assert model.training is True
