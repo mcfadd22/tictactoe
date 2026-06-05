@@ -57,6 +57,15 @@ def _build_probe_sets():
     return sets
 
 
+def _probe_metrics(model, probe_sets, paths, encoding, max_orderings):
+    """Probe success rate per metric for a trained model."""
+    return {
+        name: evaluate_probes(model, probes, paths, encoding=encoding,
+                              max_orderings=max_orderings)["rate"]
+        for name, probes in probe_sets.items()
+    }
+
+
 def _train_and_eval(config, seed, examples, paths, probe_sets, *,
                     epochs, lr, batch_size, max_orderings,
                     encoding=FLAT, head="flat9", weight_decay=0.0, eval_every=0):
@@ -78,24 +87,17 @@ def _train_and_eval(config, seed, examples, paths, probe_sets, *,
     trajectory = []
 
     def eval_hook(m, epoch, train_loss):
-        metrics = {
-            name: evaluate_probes(m, probes, paths, encoding=encoding,
-                                  max_orderings=max_orderings)["rate"]
-            for name, probes in probe_sets.items()
-        }
-        trajectory.append({"epoch": epoch, "train_loss": train_loss,
-                           "metrics": metrics})
+        trajectory.append({
+            "epoch": epoch, "train_loss": train_loss,
+            "metrics": _probe_metrics(m, probe_sets, paths, encoding, max_orderings),
+        })
 
     model, _ = train_model(
         cfg, examples, epochs=epochs, lr=lr, batch_size=batch_size,
         seed=seed, encoding=encoding, weight_decay=weight_decay,
         eval_every=eval_every, eval_hook=(eval_hook if eval_every > 0 else None),
     )
-    metrics = {
-        name: evaluate_probes(model, probes, paths, encoding=encoding,
-                              max_orderings=max_orderings)["rate"]
-        for name, probes in probe_sets.items()
-    }
+    metrics = _probe_metrics(model, probe_sets, paths, encoding, max_orderings)
     return {
         "config": config_name(n_layer, n_head, d_model),
         "n_params": model.num_params(),
