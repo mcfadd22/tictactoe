@@ -164,6 +164,28 @@ def test_train_and_eval_rejects_tied_with_rowcol():
         )
 
 
+def test_run_condition_records_trajectory_when_eval_every_set():
+    from ttt.sweep import Condition, run_condition
+    cond = Condition("T_traj", grid=((1, 1, 16),), seeds=(0,),
+                     epochs=6, eval_every=2, weight_decay=0.1)
+    raw = run_condition(cond, n_workers=1)
+    assert len(raw) == 1
+    traj = raw[0]["trajectory"]
+    assert [pt["epoch"] for pt in traj] == [2, 4, 6]
+    # each point carries train_loss and the full per-row metric set
+    pt = traj[0]
+    assert isinstance(pt["train_loss"], float)
+    assert "horizontal_win" in pt["metrics"]
+    assert "horizontal_win_row1" in pt["metrics"]
+
+
+def test_run_condition_no_trajectory_by_default():
+    from ttt.sweep import Condition, run_condition
+    cond = Condition("T_notraj", grid=((1, 1, 16),), seeds=(0,), epochs=3)
+    raw = run_condition(cond, n_workers=1)
+    assert raw[0]["trajectory"] == []
+
+
 def test_run_condition_rowcol_end_to_end():
     # Locks in the highest-risk axis: a real model trained on the ROWCOL dataset,
     # then probed via ROWCOL-encoded prefixes through evaluate. Exercises the full
