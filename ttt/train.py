@@ -19,8 +19,12 @@ def _set_seed(seed):
 
 
 def train_model(cfg: GPTConfig, examples, *, epochs, lr, batch_size,
-                seed, encoding=FLAT, device="cpu"):
-    """Train a model by next-move cross-entropy. Returns (model, loss_history)."""
+                seed, encoding=FLAT, device="cpu", weight_decay=0.0):
+    """Train a model by next-move cross-entropy. Returns (model, loss_history).
+
+    weight_decay (decoupled, AdamW) defaults to 0.0, where AdamW is numerically
+    identical to the previous Adam path.
+    """
     _set_seed(seed)
     g = torch.Generator()
     g.manual_seed(seed)
@@ -32,7 +36,7 @@ def train_model(cfg: GPTConfig, examples, *, epochs, lr, batch_size,
         generator=g,
     )
     model = TTTGPT(cfg).to(device)
-    opt = torch.optim.Adam(model.parameters(), lr=lr)
+    opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     loss_fn = torch.nn.CrossEntropyLoss()
     history = []
     model.train()
