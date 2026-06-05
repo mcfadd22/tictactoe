@@ -186,6 +186,35 @@ def test_run_condition_no_trajectory_by_default():
     assert raw[0]["trajectory"] == []
 
 
+def test_held_out_curve_averages_dropped_rows_over_seeds():
+    from ttt.sweep import held_out_curve
+    raw = [
+        {"config": "L1H1D16", "seed": 0, "trajectory": [
+            {"epoch": 2, "metrics": {"horizontal_win_row1": 0.2,
+                                     "horizontal_win_row2": 0.4}},
+            {"epoch": 4, "metrics": {"horizontal_win_row1": 0.6,
+                                     "horizontal_win_row2": 0.8}}]},
+        {"config": "L1H1D16", "seed": 1, "trajectory": [
+            {"epoch": 2, "metrics": {"horizontal_win_row1": 0.4,
+                                     "horizontal_win_row2": 0.6}},
+            {"epoch": 4, "metrics": {"horizontal_win_row1": 0.8,
+                                     "horizontal_win_row2": 1.0}}]},
+    ]
+    curve = held_out_curve(raw, frozenset({1, 2}))
+    # epoch 2: mean of [(0.2+0.4)/2, (0.4+0.6)/2] = mean(0.3, 0.5) = 0.4
+    # epoch 4: mean of [(0.6+0.8)/2, (0.8+1.0)/2] = mean(0.7, 0.9) = 0.8
+    assert curve["L1H1D16"] == [(2, 0.4), (4, 0.8)]
+
+
+def test_plot_grok_curves_writes_file(tmp_path):
+    from ttt.sweep import plot_grok_curves
+    out = tmp_path / "grok.png"
+    curves = {"L1H1D16 wd0.1": [(2, 0.1), (4, 0.12)],
+              "L2H2D32 wd0.1": [(2, 0.09), (4, 0.11)]}
+    plot_grok_curves(curves, str(out), baseline=0.40, title="E0 grok")
+    assert out.exists() and out.stat().st_size > 0
+
+
 def test_run_condition_rowcol_end_to_end():
     # Locks in the highest-risk axis: a real model trained on the ROWCOL dataset,
     # then probed via ROWCOL-encoded prefixes through evaluate. Exercises the full

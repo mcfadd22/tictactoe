@@ -248,6 +248,53 @@ def plot_capacity(agg, out_path, baselines=None, ceiling=None):
     plt.close(fig)
 
 
+def held_out_curve(raw, drop_rows):
+    """{config: [(epoch, mean held-out H-win), ...]} averaged over seeds.
+
+    The held-out rows are exactly the dropped rows; per eval point we average
+    the per-row horizontal-win rates over those rows, then over seeds.
+    """
+    from collections import defaultdict
+    rows = sorted(drop_rows)
+    by_config = defaultdict(list)
+    for row in raw:
+        by_config[row["config"]].append(row["trajectory"])
+    curves = {}
+    for config, trajs in by_config.items():
+        points = []
+        n_pts = min(len(t) for t in trajs)
+        for i in range(n_pts):
+            epoch = trajs[0][i]["epoch"]
+            per_seed = []
+            for t in trajs:
+                m = t[i]["metrics"]
+                per_seed.append(
+                    statistics.fmean(m[f"horizontal_win_row{r}"] for r in rows)
+                )
+            points.append((epoch, statistics.fmean(per_seed)))
+        curves[config] = points
+    return curves
+
+
+def plot_grok_curves(curves_by_label, out_path, baseline=None, title="Grokking probe"):
+    """Held-out horizontal-win vs. training epoch, one line per label."""
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for label, points in sorted(curves_by_label.items()):
+        xs = [e for e, _ in points]
+        ys = [v for _, v in points]
+        ax.plot(xs, ys, marker=".", label=label)
+    if baseline is not None:
+        ax.axhline(baseline, ls="--", color="gray", label="random baseline (H-win)")
+    ax.set_xlabel("training epoch")
+    ax.set_ylabel("held-out horizontal-win rate")
+    ax.set_ylim(-0.02, 1.02)
+    ax.set_title(title)
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=120)
+    plt.close(fig)
+
+
 def save_results(raw, agg, raw_path, agg_path):
     with open(raw_path, "w") as f:
         json.dump(raw, f, indent=2)
