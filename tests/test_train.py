@@ -66,3 +66,34 @@ def test_weight_decay_changes_trained_weights():
     p0 = torch.cat([p.flatten() for p in m0.parameters()])
     pw = torch.cat([p.flatten() for p in mw.parameters()])
     assert not torch.allclose(p0, pw)  # decay actually moved the weights
+
+
+def test_eval_hook_called_at_expected_epochs():
+    examples = [([BOS_ID, 0, 1], 2), ([BOS_ID, 3, 4], 5)]
+    cfg = GPTConfig(n_layer=1, n_head=1, d_model=16)
+    calls = []
+    def hook(model, epoch, train_loss):
+        calls.append((epoch, train_loss))
+    train_model(cfg, examples, epochs=10, lr=1e-2, batch_size=8, seed=0,
+                eval_every=4, eval_hook=hook)
+    # epochs are 1-indexed in the hook; every 4th plus the final epoch (10)
+    assert [e for e, _ in calls] == [4, 8, 10]
+    assert all(isinstance(l, float) for _, l in calls)
+
+
+def test_eval_hook_does_not_perturb_training():
+    examples = [([BOS_ID, 0, 1], 2), ([BOS_ID, 3, 4], 5)]
+    cfg = GPTConfig(n_layer=1, n_head=1, d_model=16)
+    m_plain, _ = train_model(cfg, examples, epochs=10, lr=1e-2, batch_size=8, seed=0)
+    m_hooked, _ = train_model(cfg, examples, epochs=10, lr=1e-2, batch_size=8, seed=0,
+                              eval_every=2, eval_hook=lambda *a: None)
+    p1 = torch.cat([p.flatten() for p in m_plain.parameters()])
+    p2 = torch.cat([p.flatten() for p in m_hooked.parameters()])
+    assert torch.allclose(p1, p2)
+
+
+def test_no_eval_hook_is_default_noop():
+    examples = [([BOS_ID, 0, 1], 2)]
+    cfg = GPTConfig(n_layer=1, n_head=1, d_model=16)
+    model, history = train_model(cfg, examples, epochs=3, lr=1e-2, batch_size=8, seed=0)
+    assert len(history) == 3  # unchanged (model, history) return, no hook required

@@ -19,11 +19,18 @@ def _set_seed(seed):
 
 
 def train_model(cfg: GPTConfig, examples, *, epochs, lr, batch_size,
-                seed, encoding=FLAT, device="cpu", weight_decay=0.0):
+                seed, encoding=FLAT, device="cpu", weight_decay=0.0,
+                eval_every=0, eval_hook=None):
     """Train a model by next-move cross-entropy. Returns (model, loss_history).
 
     weight_decay (decoupled, AdamW) defaults to 0.0, where AdamW is numerically
     identical to the previous Adam path.
+
+    eval_every / eval_hook: if both are provided and eval_every > 0, eval_hook
+    is called every eval_every epochs AND on the final epoch. Signature:
+        hook(model, epoch: int, train_loss: float) -> None
+    Epochs are 1-indexed. The hook is run under torch.no_grad(); model.train()
+    is restored afterward so subsequent epochs are unaffected.
     """
     _set_seed(seed)
     g = torch.Generator()
@@ -40,7 +47,7 @@ def train_model(cfg: GPTConfig, examples, *, epochs, lr, batch_size,
     loss_fn = torch.nn.CrossEntropyLoss()
     history = []
     model.train()
-    for _ in range(epochs):
+    for epoch in range(1, epochs + 1):
         epoch_loss, n = 0.0, 0
         for ids, lengths, targets in loader:
             ids, lengths, targets = ids.to(device), lengths.to(device), targets.to(device)
@@ -50,5 +57,11 @@ def train_model(cfg: GPTConfig, examples, *, epochs, lr, batch_size,
             opt.step()
             epoch_loss += loss.item() * len(targets)
             n += len(targets)
-        history.append(epoch_loss / max(n, 1))
+        mean_loss = epoch_loss / max(n, 1)
+        history.append(mean_loss)
+        if eval_hook is not None and eval_every > 0 and (
+            epoch % eval_every == 0 or epoch == epochs
+        ):
+            eval_hook(model, epoch, mean_loss)
+            model.train()  # hook puts the model in eval mode; restore for training
     return model, history
