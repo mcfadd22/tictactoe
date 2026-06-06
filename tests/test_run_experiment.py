@@ -43,3 +43,31 @@ def test_run_grok_smoke_writes_per_wd_and_combined(tmp_path, monkeypatch):
     assert os.path.exists("results/E_GROK_E0_wd1.0/trajectory.json")
     assert os.path.exists("results/E_GROK_E0/grok_curves.png")
     assert os.path.exists("results/E_GROK_E0/trajectories.json")
+
+
+def test_run_grok_push_results_syncs_each_condition_and_combined(tmp_path, monkeypatch):
+    import run_experiment as R
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(R, "GROK_GRID", ((1, 1, 16),))
+    monkeypatch.setattr(R, "WD_SWEEP", (0.0,))
+    calls = []
+    monkeypatch.setattr(R, "sync_results",
+                        lambda paths, message: calls.append((paths, message)))
+    R.run_grok("E0", n_workers=1, epochs=2, eval_every=2, seeds=(0,),
+               push_results=True)
+    pushed_paths = [p for paths, _ in calls for p in paths]
+    # the single per-wd condition dir AND the combined per-base dir are pushed
+    assert "results/E_GROK_E0_wd0.0" in pushed_paths
+    assert "results/E_GROK_E0" in pushed_paths
+
+
+def test_run_grok_no_push_by_default(tmp_path, monkeypatch):
+    import run_experiment as R
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(R, "GROK_GRID", ((1, 1, 16),))
+    monkeypatch.setattr(R, "WD_SWEEP", (0.0,))
+    calls = []
+    monkeypatch.setattr(R, "sync_results",
+                        lambda paths, message: calls.append((paths, message)))
+    R.run_grok("E0", n_workers=1, epochs=2, eval_every=2, seeds=(0,))
+    assert calls == []  # no push unless push_results=True

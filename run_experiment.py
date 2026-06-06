@@ -55,7 +55,7 @@ GROK_SEEDS = (0, 1, 2)
 
 
 def run_grok(base, n_workers, *, epochs=GROK_EPOCHS, eval_every=GROK_EVAL_EVERY,
-             seeds=GROK_SEEDS):
+             seeds=GROK_SEEDS, push_results=False):
     """Run the weight-decay sweep for one base (E0/E3) with per-epoch logging.
 
     Writes results/E_GROK_<base>_wd<wd>/ per weight-decay value, then a combined
@@ -76,6 +76,10 @@ def run_grok(base, n_workers, *, epochs=GROK_EPOCHS, eval_every=GROK_EVAL_EVERY,
               f"wd={wd}, epochs={epochs} ===", flush=True)
         raw = run_condition(cond, n_workers=n_workers, progress=True)
         save_condition(cond, raw, os.path.join("results", name))
+        if push_results:
+            sync_results([f"results/{name}"],
+                         f"results: {name} (grok wd={wd}, "
+                         f"{len(GROK_GRID)} configs x {len(seeds)} seeds)")
         for cfg, points in held_out_curve(raw, drop).items():
             combined_curves[f"{cfg} wd{wd}"] = points
         combined_traj.append({"weight_decay": wd, "rows": [
@@ -90,6 +94,9 @@ def run_grok(base, n_workers, *, epochs=GROK_EPOCHS, eval_every=GROK_EVAL_EVERY,
     with open(os.path.join(out_dir, "trajectories.json"), "w") as f:
         json.dump(combined_traj, f, indent=2)
     print(f"  E_GROK_{base} combined -> {out_dir}/", flush=True)
+    if push_results:
+        sync_results([f"results/E_GROK_{base}"],
+                     f"results: E_GROK_{base} combined grok curves")
 
 
 def run_one(name, n_workers, ceiling=None, push_results=False):
@@ -136,7 +143,7 @@ def main():
         os.makedirs("results", exist_ok=True)
         bases = ["E0", "E3"] if args.grok == "all" else [args.grok]
         for base in bases:
-            run_grok(base, args.workers)
+            run_grok(base, args.workers, push_results=args.push_results)
         return
 
     os.makedirs("results", exist_ok=True)
