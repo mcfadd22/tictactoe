@@ -61,6 +61,9 @@ def run_grok(base, n_workers, *, epochs=GROK_EPOCHS, eval_every=GROK_EVAL_EVERY,
     Writes results/E_GROK_<base>_wd<wd>/ per weight-decay value, then a combined
     results/E_GROK_<base>/ with one curve line per (config, wd).
     """
+    if base not in GROK_BASES:
+        raise ValueError(f"unknown grok base: {base!r} (expected one of "
+                         f"{sorted(GROK_BASES)})")
     drop = GROK_BASES[base]
     combined_curves = {}
     combined_traj = []
