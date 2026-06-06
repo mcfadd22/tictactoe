@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import statistics
+import time
 from dataclasses import dataclass
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
@@ -383,6 +384,52 @@ def run_condition(cond: Condition, *, n_workers=None, progress=False):
             if progress:
                 print(f"  [{cond.name} {i}/{len(tasks)}] done", flush=True)
     return raw
+
+
+def _fmt_duration(seconds):
+    """Compact H/M formatting for progress ETAs (e.g. '2h05m' or '7m')."""
+    seconds = max(0, int(seconds))
+    h, rem = divmod(seconds, 3600)
+    m = rem // 60
+    return f"{h}h{m:02d}m" if h else f"{m}m"
+
+
+def run_grok_base(drop_rows, wd_values, *, grid, seeds, epochs, eval_every,
+                  encoding=FLAT, head="flat9", lr=1e-3, batch_size=256,
+                  max_orderings=4, n_workers=None, progress=False, label="grok"):
+    """Run every (wd, config, seed) job for one base in a SINGLE process pool.
+
+    All weight-decay values share the same training dataset (they differ only in
+    the optimizer), so one worker-built dataset serves every job and a many-core
+    machine stays busy instead of being capped at one wd-condition at a time.
+    Returns {wd: [raw_row, ...]} grouped by weight decay. When `progress`, prints
+    a rough wall-clock ETA as jobs complete.
+    """
+    if n_workers is None:
+        n_workers = os.cpu_count() or 1
+    tasks = [
+        (wd, (config, seed, head, epochs, lr, batch_size, wd, eval_every))
+        for wd in wd_values
+        for config in grid
+        for seed in seeds
+    ]
+    results = {wd: [] for wd in wd_values}
+    t0 = time.time()
+    with ProcessPoolExecutor(
+        max_workers=n_workers,
+        initializer=_cond_worker_init,
+        initargs=(encoding, drop_rows, max_orderings),
+    ) as pool:
+        futures = {pool.submit(_cond_worker_task, args): wd for wd, args in tasks}
+        for i, fut in enumerate(as_completed(futures), 1):
+            results[futures[fut]].append(fut.result())
+            if progress:
+                elapsed = time.time() - t0
+                remaining = elapsed / i * (len(tasks) - i)
+                print(f"  [{label} {i}/{len(tasks)}] done — elapsed "
+                      f"{_fmt_duration(elapsed)}, ~{_fmt_duration(remaining)} "
+                      f"left (rough est)", flush=True)
+    return results
 
 
 def compute_random_baselines():

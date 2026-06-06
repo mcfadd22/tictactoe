@@ -232,6 +232,21 @@ def test_save_condition_writes_trajectory_artifacts(tmp_path):
     assert [pt["epoch"] for pt in traj[0]["trajectory"]] == [2, 4]
 
 
+def test_run_grok_base_groups_jobs_by_wd_in_one_pool():
+    from ttt.sweep import run_grok_base
+    by_wd = run_grok_base(
+        frozenset({0, 1, 2}), (0.0, 1.0),
+        grid=((1, 1, 16),), seeds=(0,), epochs=4, eval_every=2, n_workers=2,
+    )
+    assert sorted(by_wd) == [0.0, 1.0]
+    # one (config, seed) row per wd, each carrying a trajectory at epochs [2,4]
+    for wd in (0.0, 1.0):
+        assert len(by_wd[wd]) == 1
+        row = by_wd[wd][0]
+        assert row["config"] == "L1H1D16"
+        assert [pt["epoch"] for pt in row["trajectory"]] == [2, 4]
+
+
 def test_run_condition_rowcol_end_to_end():
     # Locks in the highest-risk axis: a real model trained on the ROWCOL dataset,
     # then probed via ROWCOL-encoded prefixes through evaluate. Exercises the full

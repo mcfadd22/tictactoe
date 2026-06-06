@@ -20,7 +20,7 @@ from ttt.gitsync import sync_results
 from ttt.sweep import (
     Condition, run_condition, save_condition, horizontal_win_ceiling,
     STANDARD_GRID, DEEP_GRID, GROK_GRID, held_out_curve, plot_grok_curves,
-    compute_random_baselines,
+    compute_random_baselines, run_grok_base,
 )
 
 # Phase-1 matrix: each varies ONE axis off the baseline
@@ -56,25 +56,26 @@ GROK_SEEDS = (0, 1, 2)
 
 def run_grok(base, n_workers, *, epochs=GROK_EPOCHS, eval_every=GROK_EVAL_EVERY,
              seeds=GROK_SEEDS, push_results=False):
-    """Run the weight-decay sweep for one base (E0/E3) with per-epoch logging.
-
-    Writes results/E_GROK_<base>_wd<wd>/ per weight-decay value, then a combined
-    results/E_GROK_<base>/ with one curve line per (config, wd).
-    """
     if base not in GROK_BASES:
         raise ValueError(f"unknown grok base: {base!r} (expected one of "
                          f"{sorted(GROK_BASES)})")
     drop = GROK_BASES[base]
+    n_runs = len(WD_SWEEP) * len(GROK_GRID) * len(seeds)
+    print(f"=== E_GROK_{base}: {n_runs} runs "
+          f"({len(WD_SWEEP)} wd x {len(GROK_GRID)} configs x {len(seeds)} seeds), "
+          f"epochs={epochs} (single pool) ===", flush=True)
+    by_wd = run_grok_base(drop, WD_SWEEP, grid=GROK_GRID, seeds=seeds,
+                          epochs=epochs, eval_every=eval_every,
+                          n_workers=n_workers, progress=True,
+                          label=f"E_GROK_{base}")
     combined_curves = {}
     combined_traj = []
     for wd in WD_SWEEP:
         name = f"E_GROK_{base}_wd{wd}"
+        raw = by_wd[wd]
         cond = Condition(name, drop_horizontal_rows=drop, grid=GROK_GRID,
                          seeds=seeds, epochs=epochs, weight_decay=wd,
                          eval_every=eval_every)
-        print(f"=== {name}: {len(GROK_GRID) * len(seeds)} runs, "
-              f"wd={wd}, epochs={epochs} ===", flush=True)
-        raw = run_condition(cond, n_workers=n_workers, progress=True)
         save_condition(cond, raw, os.path.join("results", name))
         if push_results:
             sync_results([f"results/{name}"],
@@ -93,10 +94,10 @@ def run_grok(base, n_workers, *, epochs=GROK_EPOCHS, eval_every=GROK_EVAL_EVERY,
                      title=f"E_GROK {base}: held-out H-win vs epoch (all wd)")
     with open(os.path.join(out_dir, "trajectories.json"), "w") as f:
         json.dump(combined_traj, f, indent=2)
-    print(f"  E_GROK_{base} combined -> {out_dir}/", flush=True)
     if push_results:
         sync_results([f"results/E_GROK_{base}"],
                      f"results: E_GROK_{base} combined grok curves")
+    print(f"  E_GROK_{base} combined -> {out_dir}/", flush=True)
 
 
 def run_one(name, n_workers, ceiling=None, push_results=False):
