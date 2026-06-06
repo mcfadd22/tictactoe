@@ -215,6 +215,20 @@ def test_plot_grok_curves_writes_file(tmp_path):
     assert out.exists() and out.stat().st_size > 0
 
 
+def test_save_condition_writes_trajectory_artifacts(tmp_path):
+    from ttt.sweep import Condition, run_condition, save_condition
+    cond = Condition("T_save", grid=((1, 1, 16),), seeds=(0,),
+                     epochs=4, eval_every=2)
+    raw = run_condition(cond, n_workers=1)
+    save_condition(cond, raw, str(tmp_path))
+    assert (tmp_path / "trajectory.json").exists()
+    assert (tmp_path / "grok_curve.png").exists()
+    import json
+    traj = json.load(open(tmp_path / "trajectory.json"))
+    assert traj[0]["config"] == "L1H1D16"
+    assert [pt["epoch"] for pt in traj[0]["trajectory"]] == [2, 4]
+
+
 def test_run_condition_rowcol_end_to_end():
     # Locks in the highest-risk axis: a real model trained on the ROWCOL dataset,
     # then probed via ROWCOL-encoded prefixes through evaluate. Exercises the full

@@ -404,6 +404,20 @@ def save_condition(cond: Condition, raw, out_dir, ceiling=None):
         json.dump(baselines, f, indent=2)
     plot_capacity(agg, os.path.join(out_dir, "capacity.png"),
                   baselines=baselines, ceiling=ceiling)
+    if any(row.get("trajectory") for row in raw):
+        traj_out = [
+            {"config": row["config"], "seed": row["seed"],
+             "trajectory": row["trajectory"]}
+            for row in raw
+        ]
+        with open(os.path.join(out_dir, "trajectory.json"), "w") as f:
+            json.dump(traj_out, f, indent=2)
+        curves = held_out_curve(raw, cond.drop_horizontal_rows)
+        plot_grok_curves(
+            curves, os.path.join(out_dir, "grok_curve.png"),
+            baseline=baselines.get("horizontal_win"),
+            title=f"{cond.name}: held-out H-win vs epoch (wd={cond.weight_decay})",
+        )
     return agg, baselines
 
 
