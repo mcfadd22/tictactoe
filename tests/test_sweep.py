@@ -59,6 +59,8 @@ def test_save_condition_writes_artifacts(tmp_path):
         assert (tmp_path / fname).exists()
     base = json.loads((tmp_path / "baselines.json").read_text())
     assert "horizontal_win" in base
+    assert not (tmp_path / "trajectory.json").exists()
+    assert not (tmp_path / "grok_curve.png").exists()
 
 
 def test_aggregate_means_and_stds_over_seeds():
@@ -224,7 +226,8 @@ def test_save_condition_writes_trajectory_artifacts(tmp_path):
     assert (tmp_path / "trajectory.json").exists()
     assert (tmp_path / "grok_curve.png").exists()
     import json
-    traj = json.load(open(tmp_path / "trajectory.json"))
+    with open(tmp_path / "trajectory.json") as fh:
+        traj = json.load(fh)
     assert traj[0]["config"] == "L1H1D16"
     assert [pt["epoch"] for pt in traj[0]["trajectory"]] == [2, 4]
 
