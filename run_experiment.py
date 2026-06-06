@@ -11,6 +11,7 @@ docs/design/specs/2026-06-03-results-git-sync-design.md for VM setup.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import time
 
@@ -18,7 +19,8 @@ from ttt.encoding import FLAT, ROWCOL
 from ttt.gitsync import sync_results
 from ttt.sweep import (
     Condition, run_condition, save_condition, horizontal_win_ceiling,
-    STANDARD_GRID, DEEP_GRID,
+    STANDARD_GRID, DEEP_GRID, GROK_GRID, held_out_curve, plot_grok_curves,
+    compute_random_baselines,
 )
 
 # Phase-1 matrix: each varies ONE axis off the baseline
@@ -40,6 +42,51 @@ CONDITIONS = {
                      drop_horizontal_rows=frozenset({0, 1, 2}), grid=STANDARD_GRID),
 }
 PHASE1 = ["E0", "E1", "E2", "E3", "E4", "E5a", "E5b"]
+
+# --- Grokking / double-descent probe ---------------------------------------
+WD_SWEEP = (0.0, 0.01, 0.1, 1.0)
+GROK_BASES = {
+    "E0": frozenset({0, 1, 2}),  # rotational: zero horizontal exposure
+    "E3": frozenset({1, 2}),     # translational: top row seen, rows 1-2 held out
+}
+GROK_EPOCHS = 20000
+GROK_EVAL_EVERY = 100
+GROK_SEEDS = (0, 1, 2)
+
+
+def run_grok(base, n_workers, *, epochs=GROK_EPOCHS, eval_every=GROK_EVAL_EVERY,
+             seeds=GROK_SEEDS):
+    """Run the weight-decay sweep for one base (E0/E3) with per-epoch logging.
+
+    Writes results/E_GROK_<base>_wd<wd>/ per weight-decay value, then a combined
+    results/E_GROK_<base>/ with one curve line per (config, wd).
+    """
+    drop = GROK_BASES[base]
+    combined_curves = {}
+    combined_traj = []
+    for wd in WD_SWEEP:
+        name = f"E_GROK_{base}_wd{wd}"
+        cond = Condition(name, drop_horizontal_rows=drop, grid=GROK_GRID,
+                         seeds=seeds, epochs=epochs, weight_decay=wd,
+                         eval_every=eval_every)
+        print(f"=== {name}: {len(GROK_GRID) * len(seeds)} runs, "
+              f"wd={wd}, epochs={epochs} ===", flush=True)
+        raw = run_condition(cond, n_workers=n_workers, progress=True)
+        save_condition(cond, raw, os.path.join("results", name))
+        for cfg, points in held_out_curve(raw, drop).items():
+            combined_curves[f"{cfg} wd{wd}"] = points
+        combined_traj.append({"weight_decay": wd, "rows": [
+            {"config": r["config"], "seed": r["seed"],
+             "trajectory": r["trajectory"]} for r in raw]})
+    out_dir = os.path.join("results", f"E_GROK_{base}")
+    os.makedirs(out_dir, exist_ok=True)
+    baseline = compute_random_baselines().get("horizontal_win")
+    plot_grok_curves(combined_curves, os.path.join(out_dir, "grok_curves.png"),
+                     baseline=baseline,
+                     title=f"E_GROK {base}: held-out H-win vs epoch (all wd)")
+    with open(os.path.join(out_dir, "trajectories.json"), "w") as f:
+        json.dump(combined_traj, f, indent=2)
+    print(f"  E_GROK_{base} combined -> {out_dir}/", flush=True)
 
 
 def run_one(name, n_workers, ceiling=None, push_results=False):
@@ -67,6 +114,9 @@ def build_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--condition", default="all",
                         choices=["all"] + PHASE1)
+    parser.add_argument("--grok", choices=["E0", "E3", "all"],
+                        help="run the long-training weight-decay grokking probe "
+                             "for a base condition (or both)")
     parser.add_argument("--workers", type=int,
                         default=int(os.environ.get("TTT_WORKERS",
                                                    os.cpu_count() or 1)))
@@ -78,6 +128,13 @@ def build_parser():
 
 def main():
     args = build_parser().parse_args()
+
+    if args.grok:
+        os.makedirs("results", exist_ok=True)
+        bases = ["E0", "E3"] if args.grok == "all" else [args.grok]
+        for base in bases:
+            run_grok(base, args.workers)
+        return
 
     os.makedirs("results", exist_ok=True)
     names = PHASE1 if args.condition == "all" else [args.condition]

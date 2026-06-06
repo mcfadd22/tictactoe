@@ -29,3 +29,17 @@ def test_push_results_flag_defaults_off():
     assert build_parser().parse_args(["--condition", "E0"]).push_results is False
     assert build_parser().parse_args(
         ["--condition", "E0", "--push-results"]).push_results is True
+
+
+def test_run_grok_smoke_writes_per_wd_and_combined(tmp_path, monkeypatch):
+    import os
+    import run_experiment as R
+    monkeypatch.chdir(tmp_path)
+    # tiny override: 1 config, 1 seed, few epochs, 2 wd values
+    monkeypatch.setattr(R, "GROK_GRID", ((1, 1, 16),))
+    monkeypatch.setattr(R, "WD_SWEEP", (0.0, 1.0))
+    R.run_grok("E0", n_workers=1, epochs=4, eval_every=2, seeds=(0,))
+    assert os.path.exists("results/E_GROK_E0_wd0.0/grok_curve.png")
+    assert os.path.exists("results/E_GROK_E0_wd1.0/trajectory.json")
+    assert os.path.exists("results/E_GROK_E0/grok_curves.png")
+    assert os.path.exists("results/E_GROK_E0/trajectories.json")

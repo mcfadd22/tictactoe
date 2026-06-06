@@ -41,6 +41,8 @@ STANDARD_GRID = tuple(
 DEEP_GRID = STANDARD_GRID + tuple(
     (8, H, D) for H in (1, 2, 4) for D in (16, 32, 64) if D % H == 0
 )
+# Grokking probe: two small configs (grokking favors small models + weight decay).
+GROK_GRID = ((1, 1, 16), (2, 2, 32))
 
 
 def config_name(n_layer, n_head, d_model):
