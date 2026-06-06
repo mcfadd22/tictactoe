@@ -66,18 +66,25 @@ The one genuinely new capability. Grokking and epoch-wise double descent are
 observe them.
 
 - `train_model` gains optional `eval_every: int = 0` and
-  `eval_hook: Callable[[model, epoch], dict] | None = None`. When
+  `eval_hook: Callable[[model, epoch, train_loss], None] | None = None`. When
   `eval_every > 0` and a hook is given, every `eval_every` epochs (and on the
-  final epoch) `train_model` calls the hook and appends
-  `{"epoch": e, "train_loss": l, "metrics": {...}}` to a **trajectory** list,
-  returned as a third value: `(model, history, trajectory)`. When `eval_every == 0`
-  the trajectory is empty and the existing code path is unchanged.
+  final epoch) `train_model` calls `eval_hook(model, epoch, mean_loss)`, under
+  `torch.no_grad()` with a `try/finally` that restores `model.train()`
+  afterward. **`train_model`'s return stays `(model, history)` — the arity is
+  unchanged.** (Implementation note: an earlier draft of this spec returned a
+  third `trajectory` value; that was dropped to avoid breaking the existing
+  `model, history = train_model(...)` callers and tests. The trajectory is
+  instead accumulated by the caller's hook closure — same data captured, no API
+  break, and it lets a test prove logging does not perturb the trained weights.)
+  When `eval_every == 0` or no hook is given, the hook is never called and the
+  existing code path is unchanged.
 - `train.py` stays ignorant of probe internals: the hook is built in `sweep.py`
-  as a closure over `probe_sets / paths / encoding`, calling the existing
-  `evaluate_probes`. Clean boundary — `train.py` knows only "call this every N
-  epochs and collect what it returns."
-- `_train_and_eval` returns the trajectory alongside the final metrics row so it
-  reaches `run_condition`'s raw rows.
+  (`_train_and_eval`) as a closure over `probe_sets / paths / encoding` that
+  calls the existing `evaluate_probes` and appends
+  `{"epoch": e, "train_loss": l, "metrics": {...}}` to a local **trajectory**
+  list. Clean boundary — `train.py` only invokes the hook each cadence.
+- `_train_and_eval` returns that trajectory alongside the final metrics row (as
+  a `"trajectory"` key) so it reaches `run_condition`'s raw rows.
 
 ### 3. New `Condition` fields + grok conditions (`ttt/sweep.py`, `run_experiment.py`)
 

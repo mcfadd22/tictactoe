@@ -266,6 +266,8 @@ def held_out_curve(raw, drop_rows):
         points = []
         n_pts = min(len(t) for t in trajs)
         for i in range(n_pts):
+            # Seeds of one condition share epochs/eval_every, so all trajs[t][i]
+            # land on the same epoch; reading it from the first seed is safe.
             epoch = trajs[0][i]["epoch"]
             per_seed = []
             for t in trajs:
