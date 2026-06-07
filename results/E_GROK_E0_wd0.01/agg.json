@@ -1,0 +1,80 @@
+{
+  "L1H1D16": {
+    "n_params": 3801,
+    "horizontal_win": {
+      "mean": 0.1370569762225213,
+      "std": 0.010124077251141091
+    },
+    "horizontal_block": {
+      "mean": 0.9926215277777777,
+      "std": 0.0019889651453801347
+    },
+    "vertical_win": {
+      "mean": 0.9979811574697174,
+      "std": 0.001780451757109403
+    },
+    "vertical_block": {
+      "mean": 0.9856770833333334,
+      "std": 0.0078125
+    },
+    "diagonal_win": {
+      "mean": 0.9995039682539683,
+      "std": 0.0004295760931470735
+    },
+    "diagonal_block": {
+      "mean": 0.9944690265486725,
+      "std": 0.003988441676398201
+    },
+    "horizontal_win_row0": {
+      "mean": 0.12666666666666668,
+      "std": 0.008326663997864539
+    },
+    "horizontal_win_row1": {
+      "mean": 0.15363511659807957,
+      "std": 0.033830898368006915
+    },
+    "horizontal_win_row2": {
+      "mean": 0.13133333333333333,
+      "std": 0.01700980109623076
+    }
+  },
+  "L2H2D32": {
+    "n_params": 26441,
+    "horizontal_win": {
+      "mean": 0.24697173620457605,
+      "std": 0.05993767847686537
+    },
+    "horizontal_block": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "vertical_win": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "vertical_block": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "diagonal_win": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "diagonal_block": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "horizontal_win_row0": {
+      "mean": 0.24666666666666667,
+      "std": 0.04314317249963582
+    },
+    "horizontal_win_row1": {
+      "mean": 0.25377229080932784,
+      "std": 0.07658449850319814
+    },
+    "horizontal_win_row2": {
+      "mean": 0.24066666666666667,
+      "std": 0.10346658075597807
+    }
+  }
+}
